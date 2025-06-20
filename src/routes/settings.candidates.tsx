@@ -132,7 +132,7 @@ function RouteComponent() {
         data: candidate,
       },
       isSheetOpen: true,
-      size: 'md',
+      size: 'sm',
     })
   }
 
@@ -144,7 +144,7 @@ function RouteComponent() {
         data: null,
       },
       isSheetOpen: true,
-      size: 'md',
+      size: 'sm',
     })
   }
 
