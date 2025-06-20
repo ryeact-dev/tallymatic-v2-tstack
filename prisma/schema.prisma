@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  password     String        @default("")
+  email        String
+  role         String        @db.VarChar(20) // admin, manager, tabulator, judge 
+  fullName     String        @default("")
+  photo        String        @default("")
+  createdAt    DateTime      @default(now())
+  isActive     Boolean       @default(true)
+  judgeNumber  Int           @default(0)
+  eventId      String?
+  event        Event?        @relation(fields: [eventId], references: [id])
+  competitions Competition[] @relation("CompetitionToUser")
+  scoresheet   Scoresheet[]
+}
+
+model Event {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  eventDate    DateTime      @default(now())
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  candidates   Candidate[]
+  competitions Competition[]
+  user         User[]
+}
+
+model Competition {
+  id              String       @id @default(uuid())
+  name            String       @default("")
+  number          Int          @default(0)
+  createdAt       DateTime     @default(now())
+  eventId         String       @default("")
+  criteria        Json[]
+  multiplier      Decimal      @default(0) @db.Decimal(3, 1)
+  isActive        Boolean      @default(false)
+  isFinalist      Boolean      @default(false)
+  finalistList    String[]
+  judgesSubmitted String[]
+  finalists       Int          @default(0)
+  event           Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  scoresheet      Scoresheet[]
+  candidates      Candidate[]  @relation("CompetitionToCandidate")
+  users           User[]       @relation("CompetitionToUser")
+}
+
+model Scoresheet {
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now())
+  competitionId String
+  candidateId   String
+  userId        String
+  scores        Json[]
+  total         Decimal     @default(0) @db.Decimal(3, 1)
+  rank          Int         @default(0)
+  candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Candidate {
+  id           String        @id @default(uuid())
+  fullName     String        @default("")
+  number       Int           @default(0)
+  course       String        @default("")
+  photo        String        @default("")
+  createdAt    DateTime      @default(now())
+  eventId      String
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  scoresheet   Scoresheet[]
+  competitions Competition[] @relation("CompetitionToCandidate")
+}

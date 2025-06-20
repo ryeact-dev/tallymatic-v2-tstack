@@ -11,3 +11,5 @@ count.txt
 .tanstack
 .vinxi
 count.txt
+
+/src/generated/prisma
