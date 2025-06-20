@@ -36,7 +36,6 @@ export const competitionQueries = {
         return JSON.parse(data.competitions)
       },
       retry: 0,
-      enabled: !!eventId,
     }),
 }
 
