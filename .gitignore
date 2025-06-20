@@ -10,6 +10,8 @@ count.txt
 .output
 .tanstack
 .vinxi
+
 count.txt
 
 /src/generated/prisma
+/prisma
