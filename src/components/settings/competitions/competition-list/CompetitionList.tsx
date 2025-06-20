@@ -287,6 +287,9 @@ export default function CompetitionList({
     )
   }, [selectedKeys, items.length, page, pages, hasSearchFilter])
 
+  // TODO: IF USER IS ADMIN, SHOW THE EVENT FILTER FOR EVENT COMPETITIONS
+  // TODO: IF USER IS ADMIN, SHOW ALL COMPETITIONS FOR DIFFERENT EVENTS AND IF USER IS MANAGER SHOW ONLY THEIR COMPETITIONS
+
   return (
     <>
       <Table
