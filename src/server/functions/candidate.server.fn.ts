@@ -23,7 +23,7 @@ export const getAllCompetitionsServerFn = createServerFn()
       page: data.page,
       limit: data.limit,
       filter: data.filter || '',
-      eventId: data.eventId,
+      eventId: data.eventId || '',
     })
   })
 

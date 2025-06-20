@@ -21,7 +21,7 @@ export default function ImageCropperModal({
 }: {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
-  setCroppedImage: React.Dispatch<React.SetStateAction<string | null>>
+  setCroppedImage: (url: string | null) => void
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
 

@@ -1,12 +1,12 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 // Login Schema
 export const loginSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-});
+})
 
-export type LoginFormValues = z.infer<typeof loginSchema>;
+export type LoginFormValues = z.infer<typeof loginSchema>
 
 // Competition Schema
 export const competitionBaseSchema = z.object({
@@ -28,23 +28,23 @@ export const competitionBaseSchema = z.object({
   finalists: z.coerce
     .number({ invalid_type_error: 'Must be an integer' })
     .min(0, 'Must be 0 or greater'),
-});
+})
 
 export const competitionSchema = competitionBaseSchema.refine(
   (data) => {
     if (data.isFinalist) {
-      return data.finalists > 0;
+      return data.finalists > 0
     } else {
-      return data.finalists === 0;
+      return data.finalists === 0
     }
   },
   {
     message: 'Finalists must be greater than 0 for Major Competition',
     path: ['finalists'],
-  }
-);
+  },
+)
 
-export type CompetitionFormValues = z.infer<typeof competitionSchema>;
+export type CompetitionFormValues = z.infer<typeof competitionSchema>
 
 // User Schema
 export const userBaseSchema = z.object({
@@ -60,7 +60,7 @@ export const userBaseSchema = z.object({
     name: z.string().min(3, 'Event name must be at least 3 characters'),
   }),
   competitionIds: z.array(z.string()).optional(),
-});
+})
 
 export const userSchema = userBaseSchema.superRefine((data, ctx) => {
   if (
@@ -71,7 +71,7 @@ export const userSchema = userBaseSchema.superRefine((data, ctx) => {
       code: z.ZodIssueCode.custom,
       message: 'Please select at least one competition',
       path: ['competitions'],
-    });
+    })
   }
 
   if (data.role === 'judge' && data.judgeNumber === 0) {
@@ -79,11 +79,11 @@ export const userSchema = userBaseSchema.superRefine((data, ctx) => {
       code: z.ZodIssueCode.custom,
       message: 'Judge number must be greater than 0',
       path: ['judgeNumber'],
-    });
+    })
   }
-});
+})
 
-export type UserFormValues = z.infer<typeof userBaseSchema>;
+export type UserFormValues = z.infer<typeof userBaseSchema>
 
 // Event Schema
 export const eventSchema = z
@@ -100,11 +100,11 @@ export const eventSchema = z
         code: z.ZodIssueCode.custom,
         message: 'Event date must be after current date',
         path: ['eventDate'],
-      });
+      })
     }
-  });
+  })
 
-export type EventFormValues = z.infer<typeof eventSchema>;
+export type EventFormValues = z.infer<typeof eventSchema>
 
 // Candidate Schema
 export const candidateBaseSchema = z.object({
@@ -114,8 +114,8 @@ export const candidateBaseSchema = z.object({
     .number({ invalid_type_error: 'Must be an integer' })
     .gt(0, 'Must be greater than 0'),
   course: z.string().min(3, 'Course name must be at least 3 characters'),
-  photo: z.string().base64(),
+  photo: z.string().min(1, 'Photo must be at least 1 character'),
   eventId: z.string(),
-});
+})
 
-export type CandidateFormValues = z.infer<typeof candidateBaseSchema>;
+export type CandidateFormValues = z.infer<typeof candidateBaseSchema>

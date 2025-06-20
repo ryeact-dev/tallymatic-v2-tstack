@@ -2,18 +2,17 @@ import { Button, Form, Input, useDisclosure } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getRouteApi } from '@tanstack/react-router'
 import { Controller, useForm } from 'react-hook-form'
-import { useState } from 'react'
-import { CameraOff, PlusCircleIcon, UploadIcon } from 'lucide-react'
+import { useCallback } from 'react'
+import { CameraOff, PlusCircleIcon } from 'lucide-react'
 
 import type { CandidateNoCreatedAt } from '~/utils/types'
 import type { SubmitHandler } from 'react-hook-form'
 import type { CandidateFormValues } from '~/zod/form.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
-import {
-  useCreateUserMutation,
-  useUpdateUserMutation,
-} from '~/hooks/user.hooks'
+import { useUpdateUserMutation } from '~/hooks/user.hooks'
 import ImageCropperModal from '~/components/image-cropper/ImageCropper'
+import { useCreateCandidateMutation } from '~/hooks/candidate.hook'
+import { cn } from '~/utils/cn'
 
 interface CandidateFormProps {
   onClose: () => void
@@ -38,7 +37,6 @@ export default function AddCandidateSheetBody({
   const { user } = routeApi.useRouteContext()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [croppedImage, setCroppedImage] = useState<string | null>(null)
 
   const {
     control,
@@ -46,7 +44,6 @@ export default function AddCandidateSheetBody({
     reset,
     setValue,
     watch,
-    clearErrors,
     formState: { errors },
   } = useForm<CandidateFormValues>({
     resolver: zodResolver(candidateBaseSchema),
@@ -57,17 +54,8 @@ export default function AddCandidateSheetBody({
     reset(DEFAULT_VALUES)
   }
 
-  // Add this useEffect to handle eventInfo changes
-  // useEffect(() => {
-  //   if (userInfo) {
-  //     reset({ ...userInfo, event: userInfo.event });
-  //   } else {
-  //     onResetForm();
-  //   }
-  // }, [userInfo]);
-
-  const { mutate: createUserMutate, isPending: isCreatingUser } =
-    useCreateUserMutation(onResetForm, onClose)
+  const { mutate: createCandidateMutate, isPending: isCreatingCandidate } =
+    useCreateCandidateMutation(onResetForm, onClose)
 
   const { mutate: updateUserMutate, isPending: isUpdatingUser } =
     useUpdateUserMutation(onResetForm, onClose)
@@ -79,25 +67,46 @@ export default function AddCandidateSheetBody({
       id: candidateInfo?.id || '',
     }
 
-    // if (candidateInfo) {
-    //   updateUserMutate(newUserData);
-    // } else {
-    //   createUserMutate(newUserData);
-    // }
+    if (candidateInfo) {
+      // updateUserMutate(newUserData);
+      console.log('update')
+    } else {
+      createCandidateMutate(newUserData)
+    }
   }
+
+  const candidateImage = watch('photo')
+
+  const onImageChangeHandler = useCallback(
+    (url: string | null) => {
+      if (!url) return
+      console.log(url)
+      setValue('photo', url)
+    },
+    [setValue],
+  )
 
   return (
     <>
       <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div className="relative w-full h-[420px] flex items-center justify-center border rounded-lg overflow-hidden">
-          {croppedImage ? (
+        <div
+          className={cn(
+            'relative w-full h-[420px] flex items-center justify-center border rounded-lg overflow-hidden',
+            errors.photo && 'border-danger',
+          )}
+        >
+          {candidateImage ? (
             <img
-              src={croppedImage}
+              src={candidateImage}
               alt="candidate-image"
-              className=" object-center object-cover "
+              className=" object-center object-cover"
             />
           ) : (
-            <CameraOff size={72} strokeWidth={1.5} />
+            <CameraOff
+              size={72}
+              strokeWidth={1.5}
+              className={cn(errors.photo && 'text-danger')}
+            />
           )}
 
           <Button
@@ -145,7 +154,7 @@ export default function AddCandidateSheetBody({
                 isInvalid={!!errors.fullName}
                 // errorMessage={errors.number?.message}
                 classNames={{
-                  input: 'pl-1 lowercase',
+                  input: 'pl-1',
                 }}
               />
             )
@@ -178,13 +187,13 @@ export default function AddCandidateSheetBody({
             type="button"
             variant="light"
             onPress={onClose}
-            disabled={isCreatingUser || isUpdatingUser}
+            disabled={isCreatingCandidate || isUpdatingUser}
           >
             Close
           </Button>
           <Button
-            disabled={isCreatingUser || isUpdatingUser}
-            isLoading={isCreatingUser || isUpdatingUser}
+            disabled={isCreatingCandidate || isUpdatingUser}
+            isLoading={isCreatingCandidate || isUpdatingUser}
             color="primary"
             type="submit"
             className="w-40"
@@ -196,7 +205,7 @@ export default function AddCandidateSheetBody({
       <ImageCropperModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        setCroppedImage={setCroppedImage}
+        setCroppedImage={onImageChangeHandler}
       />
     </>
   )

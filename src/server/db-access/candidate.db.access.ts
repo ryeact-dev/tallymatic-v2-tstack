@@ -37,6 +37,27 @@ export async function createCandidateDb(
   candidate: Omit<CandidateNoCreatedAt, 'id'>,
 ) {
   try {
+    const foundCandidate = await prisma.candidate.findFirst({
+      where: {
+        AND: [
+          {
+            eventId: candidate.eventId,
+            OR: [
+              { fullName: candidate.fullName },
+              { number: candidate.number },
+            ],
+          },
+        ],
+      },
+    })
+
+    if (foundCandidate) {
+      return {
+        success: false,
+        message: 'Candidate name/number already exists',
+      }
+    }
+
     const newCandidate = await prisma.candidate.create({
       data: {
         fullName: candidate.fullName,
@@ -46,6 +67,8 @@ export async function createCandidateDb(
         eventId: candidate.eventId,
       },
     })
+
+    console.log(`Candidate ${newCandidate.fullName} successfully added`)
 
     return {
       success: true,
