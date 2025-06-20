@@ -1,6 +1,8 @@
+import { Button, HeroUIProvider, ToastProvider, addToast } from '@heroui/react'
+
 import {
-  Outlet,
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
@@ -59,7 +61,20 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <HeroUIProvider>
+          <ToastProvider />
+          <Button
+            variant="flat"
+            onPress={() => {
+              addToast({
+                title: 'Toast Title',
+              })
+            }}
+          >
+            Default
+          </Button>
+          {children}
+        </HeroUIProvider>
         <Scripts />
       </body>
     </html>
