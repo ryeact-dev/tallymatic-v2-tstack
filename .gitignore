@@ -5,6 +5,9 @@ dist-ssr
 *.local
 count.txt
 .env
+.nitro
+.vscode
 .output
+.tanstack
 .vinxi
 count.txt

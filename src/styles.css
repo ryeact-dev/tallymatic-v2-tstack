@@ -1,15 +1,115 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  @apply m-0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #333333;
+    --card: #ffffff;
+    --card-foreground: #333333;
+    --popover: #ffffff;
+    --popover-foreground: #333333;
+    --primary: #a78bfa;
+    --primary-foreground: #ffffff;
+    --secondary: #f4f4f5;
+    --secondary-foreground: #333333;
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
+    --accent: #c084fc;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e5e7eb;
+    --input: #e5e7eb;
+    --ring: #c084fc;
+    --chart-1: #8b5cf6;
+    --chart-2: #7c3aed;
+    --chart-3: #6d28d9;
+    --chart-4: #5b21b6;
+    --chart-5: #4c1d95;
+    --sidebar: #f9fafb;
+    --sidebar-foreground: #333333;
+    --sidebar-primary: #a78bfa;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #c084fc;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #e5e7eb;
+    --sidebar-ring: #c084fc;
+    --font-sans: Geist, sans-serif;
+    --font-serif: Merriweather, serif;
+    --font-mono: Roboto Mono, monospace;
+    --radius: 0.5rem;
+    --shadow-2xs: 0px 0px 10px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 0px 10px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.1), 0px 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.1), 0px 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.1), 0px 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.1), 0px 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.1), 0px 8px 10px -1px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0px 0px 10px 0px hsl(0 0% 0% / 0.25);
+    --tracking-normal: 0.025em;
+  }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  .dark {
+    --background: #18181b;
+    --foreground: #fafafa;
+    --card: #262626;
+    --card-foreground: #fafafa;
+    --popover: #262626;
+    --popover-foreground: #fafafa;
+    --primary: #a78bfa;
+    --primary-foreground: #ffffff;
+    --secondary: #262626;
+    --secondary-foreground: #fafafa;
+    --muted: #262626;
+    --muted-foreground: #a1a1aa;
+    --accent: #a78bfa;
+    --accent-foreground: #ffffff;
+    --destructive: #f87171;
+    --destructive-foreground: #ffffff;
+    --border: #262626;
+    --input: #262626;
+    --ring: #c084fc;
+    --chart-1: #8b5cf6;
+    --chart-2: #7c3aed;
+    --chart-3: #6d28d9;
+    --chart-4: #5b21b6;
+    --chart-5: #4c1d95;
+    --sidebar: #18181b;
+    --sidebar-foreground: #fafafa;
+    --sidebar-primary: #a78bfa;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #a78bfa;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #262626;
+    --sidebar-ring: #c084fc;
+    --font-sans: Geist, sans-serif;
+    --font-serif: Merriweather, serif;
+    --font-mono: Roboto Mono, monospace;
+    --radius: 0.5rem;
+    --shadow-2xs: 0px 0px 10px 0px hsl(0 0% 0% / 0.1);
+    --shadow-xs: 0px 0px 10px 0px hsl(0 0% 0% / 0.1);
+    --shadow-sm:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
+    --shadow:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
+    --shadow-md:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.2), 0px 2px 4px -1px hsl(0 0% 0% / 0.2);
+    --shadow-lg:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.2), 0px 4px 6px -1px hsl(0 0% 0% / 0.2);
+    --shadow-xl:
+      0px 0px 10px 0px hsl(0 0% 0% / 0.2), 0px 8px 10px -1px hsl(0 0% 0% / 0.2);
+    --shadow-2xl: 0px 0px 10px 0px hsl(0 0% 0% / 0.5);
+  }
+
+  body {
+    letter-spacing: var(--tracking-normal);
+    font-family: var(--font-sans);
+  }
 }
