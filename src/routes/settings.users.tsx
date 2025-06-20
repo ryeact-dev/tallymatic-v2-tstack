@@ -25,7 +25,7 @@ export const Route = createFileRoute('/settings/users')({
       }),
     )
 
-    if (context.user.role === 'admin') {
+    if (context.user?.role === 'admin') {
       const { events } = await context.queryClient.ensureQueryData(
         eventQueries.list({
           page: 1,
@@ -101,7 +101,7 @@ function RouteComponent() {
     [users],
   )
 
-  return user.role === 'manager' ? (
+  return user?.role === 'manager' ? (
     <JudgesTabulatorsList
       onSearchChangeHandler={onSearchChangeHandler}
       onClearHandler={onClearHandler}
@@ -135,7 +135,7 @@ function RouteComponent() {
           Judges and Tabulators List
         </Tab>
 
-        {user.role === 'admin' && (
+        {user?.role === 'admin' && (
           <Tab
             key="managers"
             title={

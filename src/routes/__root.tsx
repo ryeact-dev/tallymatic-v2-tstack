@@ -34,7 +34,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.ensureQueryData(authQueries.user())
 
-    return { user: user as CurrentUser }
+    return { user }
   },
   head: () => ({
     meta: [

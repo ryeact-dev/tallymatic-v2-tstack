@@ -68,7 +68,7 @@ export default function AddCandidateSheetBody({
   const onSubmit: SubmitHandler<CandidateFormValues> = (data) => {
     const newUserData = {
       ...data,
-      eventId: user?.event?.id || '',
+      eventId: user.event?.id || '',
       id: candidateInfo?.id || '',
     }
 

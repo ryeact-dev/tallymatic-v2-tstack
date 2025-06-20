@@ -83,7 +83,7 @@ export default function AddCompetitionSheetBody({
     useUpdateCompetitionMutation(onResetForm, onClose)
 
   const onSubmit: SubmitHandler<CompetitionFormValues> = (data) => {
-    if (!user?.event?.id) {
+    if (!user.event?.id) {
       return ToastNotification({
         title: 'Adding Competition',
         description: 'Please select an event',
