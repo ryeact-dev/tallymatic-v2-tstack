@@ -15,6 +15,7 @@
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
     "@heroui/react": "^2.7.10",
+    "@hookform/resolvers": "^5.1.1",
     "@prisma/client": "^6.10.1",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/match-sorter-utils": "^8.19.4",
@@ -35,6 +36,7 @@
     "lucide-react": "^0.511.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.58.1",
     "redaxios": "^0.5.1",
     "tailwind-merge": "^3.3.1",
     "vite": "^6.3.3",

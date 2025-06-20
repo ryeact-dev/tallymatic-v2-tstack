@@ -1,8 +1,8 @@
-import { Prisma } from '@prisma/client';
-import { prisma } from '~/utils/prisma';
-import { CurrentUser, UserWithEventAndCompetitions } from '~/utils/types';
-import * as bcrypt from 'bcrypt';
-import { replacer } from '~/helpers/server-helpers';
+import * as bcrypt from 'bcrypt'
+import type { Prisma } from '~/generated/prisma/client'
+import type { CurrentUser, UserWithEventAndCompetitions } from '~/utils/types'
+import { prisma } from '~/utils/prisma'
+import { replacer } from '~/helpers/server-helpers'
 
 export async function getAllUsersDb({
   page,
@@ -10,10 +10,10 @@ export async function getAllUsersDb({
   filter,
   user,
 }: {
-  page: number;
-  limit: number;
-  filter: string;
-  user: CurrentUser;
+  page: number
+  limit: number
+  filter: string
+  user: CurrentUser
 }) {
   let users = await prisma.user.findMany({
     skip: (page - 1) * limit,
@@ -42,7 +42,7 @@ export async function getAllUsersDb({
       password: true,
       createdAt: true,
     },
-  });
+  })
 
   if (user.role === 'admin') {
     users = await prisma.user.findMany({
@@ -67,23 +67,23 @@ export async function getAllUsersDb({
         password: true,
         createdAt: true,
       },
-    });
+    })
   }
 
   // Need to serialize the users array to JSON string before returning
-  const json = JSON.stringify(users, replacer);
+  const json = JSON.stringify(users, replacer)
 
   return {
     success: true,
     message: 'Users fetched successfully',
     users: json,
-  };
+  }
 }
 
 export async function createNewUserDb(
-  user: Omit<UserWithEventAndCompetitions, 'createdAt' | 'isActive' | 'id'>
+  user: Omit<UserWithEventAndCompetitions, 'createdAt' | 'isActive' | 'id'>,
 ) {
-  const userDefaultHashedPassword = bcrypt.hashSync(user.password, 10);
+  const userDefaultHashedPassword = bcrypt.hashSync(user.password, 10)
 
   try {
     const foundUser = await prisma.user.findFirst({
@@ -97,14 +97,14 @@ export async function createNewUserDb(
           },
         ],
       },
-    });
+    })
 
     if (foundUser) {
       return {
         success: false,
         message: 'User number/username already exists',
         user: null,
-      };
+      }
     }
 
     const newUser = await prisma.user.create({
@@ -121,11 +121,11 @@ export async function createNewUserDb(
       include: {
         event: true,
       },
-    });
+    })
 
     // Connect user to competions if there are any competitons added
-    if (user.competitionIds && user.competitionIds?.length > 0) {
-      const userCompetitionIds = user.competitionIds;
+    if (user.competitionIds && user.competitionIds.length > 0) {
+      const userCompetitionIds = user.competitionIds
 
       for (const competitionId of userCompetitionIds) {
         await prisma.competition.update({
@@ -139,19 +139,19 @@ export async function createNewUserDb(
               },
             },
           },
-        });
+        })
       }
     }
 
-    console.log(`${newUser.fullName}'s successfully created`);
+    console.log(`${newUser.fullName}'s successfully created`)
 
     return {
       success: true,
       message: 'User created successfully',
       user: newUser,
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     if (
       error &&
@@ -159,22 +159,22 @@ export async function createNewUserDb(
       'code' in error &&
       error.code === 'P2002'
     ) {
-      const prismaError = error as Prisma.PrismaClientKnownRequestError;
+      const prismaError = error as Prisma.PrismaClientKnownRequestError
       const target =
-        (prismaError.meta as { target?: string[] })?.target?.[0] ?? 'Field';
+        (prismaError.meta as { target?: Array<string> }).target?.[0] ?? 'Field'
 
       return {
         success: false,
         message: `${target} already exists`,
         event: null,
-      };
+      }
     }
 
     return {
       success: false,
       message: 'Error creating user',
       user: null,
-    };
+    }
   }
 }
 
@@ -182,7 +182,7 @@ export async function updateUserDb(
   user: Omit<
     UserWithEventAndCompetitions,
     'createdAt' | 'isActive' | 'password'
-  >
+  >,
 ) {
   try {
     const foundUser = await prisma.user.findFirst({
@@ -196,14 +196,14 @@ export async function updateUserDb(
           },
         ],
       },
-    });
+    })
 
     if (foundUser && foundUser.id !== user.id) {
       return {
         success: false,
         message: 'User number/username already exists',
         user: null,
-      };
+      }
     }
 
     const updatedUser = await prisma.user.update({
@@ -222,7 +222,7 @@ export async function updateUserDb(
       include: {
         event: true,
       },
-    });
+    })
 
     const eventCompetitions = await prisma.competition.findMany({
       where: {
@@ -231,15 +231,15 @@ export async function updateUserDb(
       select: {
         id: true,
       },
-    });
+    })
 
     const eventCompetitionIds = eventCompetitions.map(
-      (competition) => competition.id
-    );
+      (competition) => competition.id,
+    )
 
     // Connect user to competions if there are any competitons added
-    if (user.competitionIds && user.competitionIds?.length > 0) {
-      const userCompetitionIds = user.competitionIds;
+    if (user.competitionIds && user.competitionIds.length > 0) {
+      const userCompetitionIds = user.competitionIds
 
       for (const competitionId of userCompetitionIds) {
         if (eventCompetitionIds.includes(competitionId)) {
@@ -255,7 +255,7 @@ export async function updateUserDb(
                 },
               },
             },
-          });
+          })
         } else {
           // Disconnect user from competition
           await prisma.competition.update({
@@ -265,20 +265,20 @@ export async function updateUserDb(
                 disconnect: [{ id: user.id }],
               },
             },
-          });
+          })
         }
       }
     }
 
-    console.log(`${updatedUser.fullName}'s successfully updated`);
+    console.log(`${updatedUser.fullName}'s successfully updated`)
 
     return {
       success: true,
       message: 'User updated successfully',
       user: updatedUser,
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     if (
       error &&
@@ -286,22 +286,22 @@ export async function updateUserDb(
       'code' in error &&
       error.code === 'P2002'
     ) {
-      const prismaError = error as Prisma.PrismaClientKnownRequestError;
+      const prismaError = error as Prisma.PrismaClientKnownRequestError
       const target =
-        (prismaError.meta as { target?: string[] })?.target?.[0] ?? 'Field';
+        (prismaError.meta as { target?: Array<string> }).target?.[0] ?? 'Field'
 
       return {
         success: false,
         message: `${target} already exists`,
         event: null,
-      };
+      }
     }
 
     return {
       success: false,
       message: 'Error updating user',
       user: null,
-    };
+    }
   }
 }
 
@@ -309,10 +309,10 @@ export async function resetUserDb({
   id,
   newPassword,
 }: {
-  id: string;
-  newPassword: string;
+  id: string
+  newPassword: string
 }) {
-  const userNewHashedPassword = bcrypt.hashSync(newPassword, 10);
+  const userNewHashedPassword = bcrypt.hashSync(newPassword, 10)
 
   try {
     const resettedUserPassword = await prisma.user.update({
@@ -322,21 +322,21 @@ export async function resetUserDb({
       data: {
         password: userNewHashedPassword,
       },
-    });
+    })
 
-    console.log(`${resettedUserPassword.fullName}'s password was resetted`);
+    console.log(`${resettedUserPassword.fullName}'s password was resetted`)
 
     return {
       success: true,
       message: 'User password sucessfully resetted',
       user: null,
-    };
+    }
   } catch (err) {
     return {
       success: false,
       message: 'Error resetting user password',
       user: null,
-    };
+    }
   }
 }
 
@@ -344,8 +344,8 @@ export async function toggleUserDb({
   id,
   isActive,
 }: {
-  id: string;
-  isActive: boolean;
+  id: string
+  isActive: boolean
 }) {
   try {
     const toggledUser = await prisma.user.update({
@@ -355,23 +355,23 @@ export async function toggleUserDb({
       data: {
         isActive,
       },
-    });
+    })
 
     console.log(
-      `${toggledUser.fullName}'s account was ${toggledUser.isActive ? 'activated' : 'deactivated'}`
-    );
+      `${toggledUser.fullName}'s account was ${toggledUser.isActive ? 'activated' : 'deactivated'}`,
+    )
 
     return {
       success: true,
       message: 'User status sucessfully update',
       user: null,
-    };
+    }
   } catch (err) {
     return {
       success: false,
       message: 'Error updating user status',
       user: null,
-    };
+    }
   }
 }
 
@@ -381,20 +381,20 @@ export async function deleteUserDb({ id }: { id: string }) {
       where: {
         id,
       },
-    });
+    })
 
-    console.log(`${deleteUser.fullName}'s account was deleted`);
+    console.log(`${deleteUser.fullName}'s account was deleted`)
 
     return {
       success: true,
       message: 'User successfully deleted',
       user: null,
-    };
+    }
   } catch (err) {
     return {
       success: false,
       message: 'Error deleting user',
       user: null,
-    };
+    }
   }
 }

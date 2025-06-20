@@ -1,4 +1,4 @@
-import { Button, HeroUIProvider, ToastProvider, addToast } from '@heroui/react'
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
 
 import {
   HeadContent,
@@ -6,21 +6,36 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { Suspense, lazy, useState } from 'react'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import Header from '../components/Header'
-
-import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
-
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
+import type { CurrentUser } from '~/utils/types/index.ts'
+import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary.tsx'
+import { NotFound } from '~/components/NotFound.tsx'
+import { authQueries } from '~/hooks/auth.hook.ts'
+import Sidebar from '~/components/Sidebar.tsx'
+import ConfimationModal from '~/components/ConfimationModal.tsx'
+import SheetContainer from '~/components/SheetContainer.tsx'
+import { seo } from '~/utils/seo'
+
 interface MyRouterContext {
   queryClient: QueryClient
+  user: CurrentUser | null
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.ensureQueryData(authQueries.user())
+
+    return { user: user as CurrentUser }
+  },
   head: () => ({
     meta: [
       {
@@ -30,29 +45,90 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       },
-      {
-        title: 'TanStack Start Starter',
-      },
+      ...seo({
+        title:
+          'TanStack Start | Type-Safe, Client-First, Full-Stack React Framework',
+        description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
+      }),
     ],
     links: [
+      { rel: 'stylesheet', href: appCss },
       {
-        rel: 'stylesheet',
-        href: appCss,
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png',
       },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/favicon-32x32.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/favicon-16x16.png',
+      },
+      { rel: 'manifest', href: '/site.webmanifest', color: '#fffff' },
+      { rel: 'icon', href: '/favicon.ico' },
     ],
   }),
-
-  component: () => (
-    <RootDocument>
-      <Header />
-
-      <Outlet />
-      <TanStackRouterDevtools />
-
-      <TanStackQueryLayout />
-    </RootDocument>
-  ),
+  errorComponent: (props) => {
+    return (
+      <RootDocument>
+        <DefaultCatchBoundary {...props} />
+      </RootDocument>
+    )
+  },
+  notFoundComponent: () => <NotFound />,
+  component: RootComponent,
 })
+
+function RootComponent() {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const { data: user } = useSuspenseQuery(authQueries.user())
+
+  return (
+    <RootDocument>
+      <div className="flex h-screen">
+        {user && (
+          <Sidebar
+            user={user}
+            isCollapsed={isCollapsed}
+            setIsCollapsed={setIsCollapsed}
+          />
+        )}
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col bg-gray-100/50 rounded-2xl">
+          <main className="flex-1 p-4 -mt-4 overflow-auto">
+            <Header
+              user={user}
+              setIsCollapsed={setIsCollapsed}
+              isCollapsed={isCollapsed}
+            />
+            <Outlet />
+
+            {/* Modal */}
+            <ConfimationModal />
+
+            {/* Sheet */}
+            <SheetContainer />
+          </main>
+        </div>
+      </div>
+    </RootDocument>
+  )
+}
+
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === 'production'
+    ? () => null
+    : lazy(() =>
+        import('@tanstack/react-router-devtools').then((res) => ({
+          default: res.TanStackRouterDevtools,
+        })),
+      )
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -63,19 +139,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <HeroUIProvider>
           <ToastProvider />
-          <Button
-            variant="flat"
-            onPress={() => {
-              addToast({
-                title: 'Toast Title',
-              })
-            }}
-          >
-            Default
-          </Button>
           {children}
+          <Scripts />
         </HeroUIProvider>
-        <Scripts />
+        <Suspense>
+          <TanStackRouterDevtools position="bottom-right" />
+        </Suspense>
+        <ReactQueryDevtools buttonPosition="bottom-left" />
       </body>
     </html>
   )

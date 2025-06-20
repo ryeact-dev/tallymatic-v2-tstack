@@ -1,11 +1,11 @@
-import { createServerFn } from '@tanstack/react-start';
+import { createServerFn } from '@tanstack/react-start'
 import {
   getCurrentUserDb,
   loginUserDb,
   logoutUserDb,
-} from '~/server/db-access/auth.db.access';
-import { loginSchema } from '~/zod/form.schema';
-import { deleteSessionTokenCookie, getSessionToken } from '~/utils/session';
+} from '~/server/db-access/auth.db.access'
+import { getSessionToken } from '~/utils/session'
+import { loginSchema } from '~/zod/form.schema'
 
 // export function getCurrentUserServerFn({
 //   sessionToken,
@@ -18,26 +18,26 @@ import { deleteSessionTokenCookie, getSessionToken } from '~/utils/session';
 // }
 
 export const getCurrentUserServerFn = createServerFn().handler(async () => {
-  const sessionToken = await getSessionToken();
+  const sessionToken = await getSessionToken()
   if (!sessionToken) {
-    console.log('no session token');
-    return null;
+    console.log('no session token')
+    return null
   }
-  const user = await getCurrentUserDb(sessionToken);
+  const user = await getCurrentUserDb(sessionToken)
 
   // console.log('server function', user);
 
-  return user;
-});
+  return user
+})
 
 export const loginUserServerFn = createServerFn({ method: 'POST' })
   .validator(loginSchema)
   .handler(async ({ data }) => {
-    return loginUserDb(data);
-  });
+    return loginUserDb(data)
+  })
 
 export const logoutUserServerFn = createServerFn({ method: 'POST' }).handler(
   async () => {
-    return logoutUserDb();
-  }
-);
+    return logoutUserDb()
+  },
+)

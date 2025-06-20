@@ -8,21 +8,18 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as UnauthenticatedRouteImport } from './routes/unauthenticated'
+import { Route as RedirectRouteImport } from './routes/redirect'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DeferredRouteImport } from './routes/deferred'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo.table'
-import { Route as DemoStoreRouteImport } from './routes/demo.store'
-import { Route as DemoStartServerFuncsRouteImport } from './routes/demo.start.server-funcs'
-import { Route as DemoStartApiRequestRouteImport } from './routes/demo.start.api-request'
-import { ServerRoute as ApiDemoNamesServerRouteImport } from './routes/api.demo-names'
-
-const rootServerRouteImport = createServerRootRoute()
+import { Route as SettingsIndexRouteImport } from './routes/settings.index'
+import { Route as SettingsUsersRouteImport } from './routes/settings.users'
+import { Route as SettingsEventsRouteImport } from './routes/settings.events'
+import { Route as SettingsCompetitionsRouteImport } from './routes/settings.competitions'
+import { Route as SettingsCandidatesRouteImport } from './routes/settings.candidates'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -34,9 +31,19 @@ const UnauthenticatedRoute = UnauthenticatedRouteImport.update({
   path: '/unauthenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedirectRoute = RedirectRouteImport.update({
+  id: '/redirect',
+  path: '/redirect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeferredRoute = DeferredRouteImport.update({
+  id: '/deferred',
+  path: '/deferred',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -44,138 +51,126 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
+const SettingsUsersRoute = SettingsUsersRouteImport.update({
+  id: '/settings/users',
+  path: '/settings/users',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoStoreRoute = DemoStoreRouteImport.update({
-  id: '/demo/store',
-  path: '/demo/store',
+const SettingsEventsRoute = SettingsEventsRouteImport.update({
+  id: '/settings/events',
+  path: '/settings/events',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
-  id: '/demo/start/server-funcs',
-  path: '/demo/start/server-funcs',
+const SettingsCompetitionsRoute = SettingsCompetitionsRouteImport.update({
+  id: '/settings/competitions',
+  path: '/settings/competitions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
-  id: '/demo/start/api-request',
-  path: '/demo/start/api-request',
+const SettingsCandidatesRoute = SettingsCandidatesRouteImport.update({
+  id: '/settings/candidates',
+  path: '/settings/candidates',
   getParentRoute: () => rootRouteImport,
-} as any)
-const ApiDemoNamesServerRoute = ApiDemoNamesServerRouteImport.update({
-  id: '/api/demo-names',
-  path: '/api/demo-names',
-  getParentRoute: () => rootServerRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
+  '/redirect': typeof RedirectRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/settings/candidates': typeof SettingsCandidatesRoute
+  '/settings/competitions': typeof SettingsCompetitionsRoute
+  '/settings/events': typeof SettingsEventsRoute
+  '/settings/users': typeof SettingsUsersRoute
+  '/settings': typeof SettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
+  '/redirect': typeof RedirectRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/settings/candidates': typeof SettingsCandidatesRoute
+  '/settings/competitions': typeof SettingsCompetitionsRoute
+  '/settings/events': typeof SettingsEventsRoute
+  '/settings/users': typeof SettingsUsersRoute
+  '/settings': typeof SettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
+  '/redirect': typeof RedirectRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/settings/candidates': typeof SettingsCandidatesRoute
+  '/settings/competitions': typeof SettingsCompetitionsRoute
+  '/settings/events': typeof SettingsEventsRoute
+  '/settings/users': typeof SettingsUsersRoute
+  '/settings/': typeof SettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/deferred'
     | '/login'
+    | '/redirect'
     | '/unauthenticated'
     | '/unauthorized'
-    | '/demo/store'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
+    | '/settings/candidates'
+    | '/settings/competitions'
+    | '/settings/events'
+    | '/settings/users'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/deferred'
     | '/login'
+    | '/redirect'
     | '/unauthenticated'
     | '/unauthorized'
-    | '/demo/store'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
+    | '/settings/candidates'
+    | '/settings/competitions'
+    | '/settings/events'
+    | '/settings/users'
+    | '/settings'
   id:
     | '__root__'
     | '/'
+    | '/deferred'
     | '/login'
+    | '/redirect'
     | '/unauthenticated'
     | '/unauthorized'
-    | '/demo/store'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
+    | '/settings/candidates'
+    | '/settings/competitions'
+    | '/settings/events'
+    | '/settings/users'
+    | '/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeferredRoute: typeof DeferredRoute
   LoginRoute: typeof LoginRoute
+  RedirectRoute: typeof RedirectRoute
   UnauthenticatedRoute: typeof UnauthenticatedRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
-  DemoStoreRoute: typeof DemoStoreRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
-  DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
-}
-export interface FileServerRoutesByFullPath {
-  '/api/demo-names': typeof ApiDemoNamesServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/demo-names': typeof ApiDemoNamesServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/demo-names': typeof ApiDemoNamesServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/demo-names'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/demo-names'
-  id: '__root__' | '/api/demo-names'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiDemoNamesServerRoute: typeof ApiDemoNamesServerRoute
+  SettingsCandidatesRoute: typeof SettingsCandidatesRoute
+  SettingsCompetitionsRoute: typeof SettingsCompetitionsRoute
+  SettingsEventsRoute: typeof SettingsEventsRoute
+  SettingsUsersRoute: typeof SettingsUsersRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -194,11 +189,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/redirect': {
+      id: '/redirect'
+      path: '/redirect'
+      fullPath: '/redirect'
+      preLoaderRoute: typeof RedirectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deferred': {
+      id: '/deferred'
+      path: '/deferred'
+      fullPath: '/deferred'
+      preLoaderRoute: typeof DeferredRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -208,72 +217,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
+    '/settings/users': {
+      id: '/settings/users'
+      path: '/settings/users'
+      fullPath: '/settings/users'
+      preLoaderRoute: typeof SettingsUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/store': {
-      id: '/demo/store'
-      path: '/demo/store'
-      fullPath: '/demo/store'
-      preLoaderRoute: typeof DemoStoreRouteImport
+    '/settings/events': {
+      id: '/settings/events'
+      path: '/settings/events'
+      fullPath: '/settings/events'
+      preLoaderRoute: typeof SettingsEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/start/server-funcs': {
-      id: '/demo/start/server-funcs'
-      path: '/demo/start/server-funcs'
-      fullPath: '/demo/start/server-funcs'
-      preLoaderRoute: typeof DemoStartServerFuncsRouteImport
+    '/settings/competitions': {
+      id: '/settings/competitions'
+      path: '/settings/competitions'
+      fullPath: '/settings/competitions'
+      preLoaderRoute: typeof SettingsCompetitionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/start/api-request': {
-      id: '/demo/start/api-request'
-      path: '/demo/start/api-request'
-      fullPath: '/demo/start/api-request'
-      preLoaderRoute: typeof DemoStartApiRequestRouteImport
+    '/settings/candidates': {
+      id: '/settings/candidates'
+      path: '/settings/candidates'
+      fullPath: '/settings/candidates'
+      preLoaderRoute: typeof SettingsCandidatesRouteImport
       parentRoute: typeof rootRouteImport
-    }
-  }
-}
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/api/demo-names': {
-      id: '/api/demo-names'
-      path: '/api/demo-names'
-      fullPath: '/api/demo-names'
-      preLoaderRoute: typeof ApiDemoNamesServerRouteImport
-      parentRoute: typeof rootServerRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeferredRoute: DeferredRoute,
   LoginRoute: LoginRoute,
+  RedirectRoute: RedirectRoute,
   UnauthenticatedRoute: UnauthenticatedRoute,
   UnauthorizedRoute: UnauthorizedRoute,
-  DemoStoreRoute: DemoStoreRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoStartApiRequestRoute: DemoStartApiRequestRoute,
-  DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
+  SettingsCandidatesRoute: SettingsCandidatesRoute,
+  SettingsCompetitionsRoute: SettingsCompetitionsRoute,
+  SettingsEventsRoute: SettingsEventsRoute,
+  SettingsUsersRoute: SettingsUsersRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiDemoNamesServerRoute: ApiDemoNamesServerRoute,
-}
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()

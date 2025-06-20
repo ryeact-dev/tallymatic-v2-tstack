@@ -1,7 +1,6 @@
-import { Prisma } from '@prisma/client';
-import { replacer } from '~/helpers/server-helpers';
-import { prisma } from '~/utils/prisma';
-import { UserCompetition } from '~/utils/types';
+import type { UserCompetition } from '~/utils/types'
+import { replacer } from '~/helpers/server-helpers'
+import { prisma } from '~/utils/prisma'
 
 export async function getAllCompetitionsDb({
   page,
@@ -9,10 +8,10 @@ export async function getAllCompetitionsDb({
   filter,
   eventId,
 }: {
-  page: number;
-  limit: number;
-  filter: string;
-  eventId: string;
+  page: number
+  limit: number
+  filter: string
+  eventId: string
 }) {
   const competitions = await prisma.competition.findMany({
     skip: (page - 1) * limit,
@@ -24,16 +23,16 @@ export async function getAllCompetitionsDb({
     orderBy: {
       number: 'asc',
     },
-  });
+  })
 
   // Need to serialize the competitions array to JSON string before returning
-  const json = JSON.stringify(competitions, replacer);
+  const json = JSON.stringify(competitions, replacer)
 
   return {
     success: true,
     message: 'Competitions successfully fetched',
     competitions: json,
-  };
+  }
 }
 
 export async function createCompetitionDb(competition: UserCompetition) {
@@ -47,13 +46,13 @@ export async function createCompetitionDb(competition: UserCompetition) {
           },
         ],
       },
-    });
+    })
 
     if (foundCompetition) {
       return {
         success: false,
         message: 'Competition name/number already exists',
-      };
+      }
     }
 
     const newCompetition = await prisma.competition.create({
@@ -63,25 +62,25 @@ export async function createCompetitionDb(competition: UserCompetition) {
         multiplier: competition.multiplier,
         finalists: competition.finalists,
         isFinalist: competition.isFinalist,
-        criteria: competition.criteria as Record<string, any>[],
+        criteria: competition.criteria as Array<Record<string, any>>,
         eventId: competition.eventId,
       },
-    });
+    })
 
-    console.log(`Competition ${newCompetition.name} successfully created`);
+    console.log(`Competition ${newCompetition.name} successfully created`)
 
     return {
       success: true,
       message: 'Competiton created successfully',
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return {
       success: false,
       message: 'Error updating competition',
       user: null,
-    };
+    }
   }
 }
 
@@ -96,13 +95,13 @@ export async function updateCompetitionDb(competition: UserCompetition) {
           },
         ],
       },
-    });
+    })
 
     if (foundCompetition && foundCompetition.id !== competition.id) {
       return {
         success: false,
         message: 'Competition name/number already exists',
-      };
+      }
     }
 
     const newCompetition = await prisma.competition.update({
@@ -115,24 +114,24 @@ export async function updateCompetitionDb(competition: UserCompetition) {
         multiplier: competition.multiplier,
         finalists: competition.finalists,
         isFinalist: competition.isFinalist,
-        criteria: competition.criteria as Record<string, any>[],
+        criteria: competition.criteria as Array<Record<string, any>>,
       },
-    });
+    })
 
-    console.log(`Competition ${newCompetition.name} successfully updated`);
+    console.log(`Competition ${newCompetition.name} successfully updated`)
 
     return {
       success: true,
       message: 'Competiton successfully updated',
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return {
       success: false,
       message: 'Error updating competition',
       user: null,
-    };
+    }
   }
 }
 
@@ -140,8 +139,8 @@ export async function toggleCompetitionDb({
   id,
   isActive,
 }: {
-  id: string;
-  isActive: boolean;
+  id: string
+  isActive: boolean
 }) {
   try {
     const [toggledCompetition, _] = await prisma.$transaction([
@@ -163,24 +162,24 @@ export async function toggleCompetitionDb({
           isActive: false,
         },
       }),
-    ]);
+    ])
 
     console.log(
-      `Competition ${toggledCompetition.name} successfully was ${toggledCompetition.isActive ? 'activated' : 'deactivated'}`
-    );
+      `Competition ${toggledCompetition.name} successfully was ${toggledCompetition.isActive ? 'activated' : 'deactivated'}`,
+    )
 
     return {
       success: true,
       message: 'Competiton successfully updated',
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return {
       success: false,
       message: 'Error updating competition',
       user: null,
-    };
+    }
   }
 }
 
@@ -190,21 +189,21 @@ export async function deleteCompetitionDb({ id }: { id: string }) {
       where: {
         id,
       },
-    });
+    })
 
-    console.log(`Competition ${deletedCompetition.name} successfully deleted`);
+    console.log(`Competition ${deletedCompetition.name} successfully deleted`)
 
     return {
       success: true,
       message: 'Competiton successfully deleted',
-    };
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return {
       success: false,
       message: 'Error deleting competition',
       user: null,
-    };
+    }
   }
 }

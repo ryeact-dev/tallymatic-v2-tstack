@@ -1,13 +1,13 @@
-import { verifyToken } from '~/utils/jwt';
-import { prisma } from '~/utils/prisma';
-import { deleteSessionTokenCookie, setSession } from '~/utils/session';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt'
+import { verifyToken } from '~/utils/jwt'
+import { prisma } from '~/utils/prisma'
+import { deleteSessionTokenCookie, setSession } from '~/utils/session'
 
 export async function getCurrentUserDb(sessionToken: string) {
-  const decoded = verifyToken(sessionToken);
+  const decoded = verifyToken(sessionToken)
 
   if (!decoded || typeof decoded === 'string') {
-    return null;
+    return null
   }
 
   const user = await prisma.user.findUnique({
@@ -29,21 +29,21 @@ export async function getCurrentUserDb(sessionToken: string) {
       email: true,
       eventId: true,
     },
-  });
+  })
 
-  return user;
+  return user
 }
 
 export async function loginUserDb(data: {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }) {
   try {
-    let returnResponse = {
+    const returnResponse = {
       success: false,
       message: '',
       user: null,
-    };
+    }
 
     const user = await prisma.user.findUnique({
       where: {
@@ -58,54 +58,54 @@ export async function loginUserDb(data: {
           },
         },
       },
-    });
+    })
 
     if (!user) {
-      returnResponse.message = 'User not found';
-      return returnResponse;
+      returnResponse.message = 'User not found'
+      return returnResponse
     }
 
-    const isPasswordValid = bcrypt.compareSync(data.password, user.password);
+    const isPasswordValid = bcrypt.compareSync(data.password, user.password)
 
     if (!isPasswordValid) {
-      returnResponse.message = 'Invalid password';
-      return returnResponse;
+      returnResponse.message = 'Invalid password'
+      return returnResponse
     }
 
-    await setSession(user);
+    await setSession(user)
 
-    const { password, ...userData } = user;
+    const { password, ...userData } = user
 
     return {
       success: true,
       message: 'User logged in successfully',
       user: userData,
-    };
+    }
   } catch (error) {
-    console.error(error);
+    console.error(error)
     return {
       success: false,
       message: 'Error logging in',
       user: null,
-    };
+    }
   }
 }
 
 export async function logoutUserDb() {
   try {
-    await deleteSessionTokenCookie();
+    await deleteSessionTokenCookie()
 
     return {
       success: true,
       message: 'User logged-out successfully',
       user: null,
-    };
+    }
   } catch (error) {
-    console.error(error);
+    console.error(error)
     return {
       success: false,
       message: 'Error logging out',
       user: null,
-    };
+    }
   }
 }

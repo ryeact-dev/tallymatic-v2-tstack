@@ -1,33 +1,87 @@
-import { Link } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
+import { Button } from '@heroui/react'
+import { useEffect } from 'react'
+import { PanelLeftIcon } from 'lucide-react'
+import type { CurrentUser } from '~/utils/types'
+import { useLogoutUserMutation } from '~/hooks/auth.hook'
 
-export default function Header() {
+export default function Header({
+  user,
+  setIsCollapsed,
+  isCollapsed,
+}: {
+  user: CurrentUser | null
+  setIsCollapsed: (isCollapsed: boolean) => void
+  isCollapsed: boolean
+}) {
+  const navigate = useNavigate()
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  })
+
+  const { mutate: logoutUserMutate } = useLogoutUserMutation()
+
+  useEffect(() => {
+    if (!user) {
+      navigate({ to: '/login', replace: true })
+      return
+    }
+
+    if (pathname.toString().includes('login')) {
+      navigate({ to: '/', replace: true })
+      return
+    }
+  }, [user])
+
+  const onLogout = () => {
+    logoutUserMutate(null)
+  }
+
   return (
-    <header className="p-2 flex gap-2 bg-white text-black justify-between">
-      <nav className="flex flex-row">
-        <div className="px-2 font-bold">
-          <Link to="/">Home</Link>
-        </div>
+    <div className="flex gap-2 items-center my-2">
+      {user && (
+        <>
+          <Button
+            size="sm"
+            isIconOnly
+            variant="light"
+            onPress={() => setIsCollapsed(!isCollapsed)}
+          >
+            <PanelLeftIcon />
+          </Button>
 
-        <div className="px-2 font-bold">
-          <Link to="/demo/start/server-funcs">Start - Server Functions</Link>
-        </div>
+          <p> {pathname}</p>
+        </>
+      )}
+    </div>
 
-        <div className="px-2 font-bold">
-          <Link to="/demo/start/api-request">Start - API Request</Link>
-        </div>
+    // <div className='p-2 flex gap-2 text-lg '>
 
-        <div className="px-2 font-bold">
-          <Link to="/demo/store">Store</Link>
-        </div>
-
-        <div className="px-2 font-bold">
-          <Link to="/demo/table">TanStack Table</Link>
-        </div>
-
-        <div className="px-2 font-bold">
-          <Link to="/demo/tanstack-query">TanStack Query</Link>
-        </div>
-      </nav>
-    </header>
+    //   <Link
+    //     to='/route-a'
+    //     activeProps={{
+    //       className: 'font-bold',
+    //     }}
+    //   >
+    //     Pathless Layout
+    //   </Link>{' '}
+    //   <Link
+    //     to='/deferred'
+    //     activeProps={{
+    //       className: 'font-bold',
+    //     }}
+    //   >
+    //     Deferred
+    //   </Link>{' '}
+    //   <Link
+    //     // @ts-expect-error
+    //     to='/this-route-does-not-exist'
+    //     activeProps={{
+    //       className: 'font-bold',
+    //     }}
+    //   >
+    //     This Route Does Not Exist
+    //   </Link>
+    // </div>
   )
 }

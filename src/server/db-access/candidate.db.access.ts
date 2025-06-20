@@ -1,8 +1,6 @@
-import { verifyToken } from '~/utils/jwt';
-import { prisma } from '~/utils/prisma';
-import { deleteSessionTokenCookie, setSession } from '~/utils/session';
-import * as bcrypt from 'bcrypt';
-import { CandidateNoCreatedAt } from '~/utils/types';
+import * as bcrypt from 'bcrypt'
+import type { CandidateNoCreatedAt } from '~/utils/types'
+import { prisma } from '~/utils/prisma'
 
 // export async function getCurrentUserDb(sessionToken: string) {
 //   const decoded = verifyToken(sessionToken);
@@ -36,7 +34,7 @@ import { CandidateNoCreatedAt } from '~/utils/types';
 // }
 
 export async function createCandidateDb(
-  candidate: Omit<CandidateNoCreatedAt, 'id'>
+  candidate: Omit<CandidateNoCreatedAt, 'id'>,
 ) {
   try {
     const newCandidate = await prisma.candidate.create({
@@ -47,19 +45,19 @@ export async function createCandidateDb(
         photo: candidate.photo,
         eventId: candidate.eventId,
       },
-    });
+    })
 
     return {
       success: true,
       message: 'User logged in successfully',
       // can: userData,
-    };
+    }
   } catch (error) {
-    console.error(error);
+    console.error(error)
     return {
       success: false,
       message: 'Error logging in',
       user: null,
-    };
+    }
   }
 }
