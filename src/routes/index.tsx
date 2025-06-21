@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  loader: ({ context }) => {
+  beforeLoad: ({ context }) => {
     const user = context.user
 
     if (!user) {
