@@ -2,7 +2,7 @@ import type { UserCompetition } from '~/utils/types'
 import { replacer } from '~/helpers/server-helpers'
 import { prisma } from '~/utils/prisma'
 
-export async function getAllCompetitionsDb({
+export async function getEventCompetitionsDb({
   page,
   limit,
   filter,
@@ -13,25 +13,34 @@ export async function getAllCompetitionsDb({
   filter: string
   eventId: string
 }) {
-  const competitions = await prisma.competition.findMany({
-    skip: (page - 1) * limit,
-    take: limit,
-    where: {
-      name: { contains: filter },
-      eventId,
-    },
-    orderBy: {
-      number: 'asc',
-    },
-  })
+  try {
+    const competitions = await prisma.competition.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: {
+        name: { contains: filter },
+        eventId,
+      },
+      orderBy: {
+        number: 'asc',
+      },
+    })
 
-  // Need to serialize the competitions array to JSON string before returning
-  const json = JSON.stringify(competitions, replacer)
+    // Need to serialize the competitions array to JSON string before returning
+    const json = JSON.stringify(competitions, replacer)
 
-  return {
-    success: true,
-    message: 'Competitions successfully fetched',
-    competitions: json,
+    return {
+      success: true,
+      message: 'Competitions successfully fetched',
+      competitions: json,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      success: false,
+      message: 'Error fetching competitions',
+      user: null,
+    }
   }
 }
 

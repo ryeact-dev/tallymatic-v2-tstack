@@ -10,28 +10,33 @@ export async function getCurrentUserDb(sessionToken: string) {
     return null
   }
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: decoded.id,
-    },
-    include: {
-      event: true,
-      competitions: {
-        select: {
-          id: true,
-          name: true,
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: decoded.id,
+      },
+      include: {
+        event: true,
+        competitions: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
       },
-    },
-    omit: {
-      password: true,
-      createdAt: true,
-      email: true,
-      eventId: true,
-    },
-  })
+      omit: {
+        password: true,
+        createdAt: true,
+        email: true,
+        eventId: true,
+      },
+    })
 
-  return user
+    return user
+  } catch (error) {
+    console.error(error)
+    return null
+  }
 }
 
 export async function loginUserDb(data: {
