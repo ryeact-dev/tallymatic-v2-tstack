@@ -17,7 +17,7 @@ export const Route = createFileRoute('/settings/users')({
   validateSearch: (search) => userSearchSchema.parse(search),
   loaderDeps: ({ search: { page, filter } }) => ({ page, filter }),
   loader: async ({ context, deps: { filter, page } }) => {
-    await context.queryClient.prefetchQuery(
+    await context.queryClient.ensureQueryData(
       userQueries.list({
         page,
         limit: 20,

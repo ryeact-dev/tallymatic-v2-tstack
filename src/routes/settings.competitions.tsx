@@ -36,7 +36,7 @@ export const Route = createFileRoute('/settings/competitions')({
   validateSearch: (search) => searchSchema.parse(search),
   loaderDeps: ({ search: { page, filter } }) => ({ page, filter }),
   loader: async ({ context, deps: { filter, page } }) => {
-    await context.queryClient.prefetchQuery(
+    await context.queryClient.ensureQueryData(
       competitionQueries.list({
         page: Number(page),
         limit: 20,
