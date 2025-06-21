@@ -2,36 +2,46 @@ import * as bcrypt from 'bcrypt'
 import type { CandidateNoCreatedAt } from '~/utils/types'
 import { prisma } from '~/utils/prisma'
 
-// export async function getCurrentUserDb(sessionToken: string) {
-//   const decoded = verifyToken(sessionToken);
+export async function getEventCandidatesDb({
+  page,
+  limit,
+  filter,
+  eventId,
+}: {
+  page: number
+  limit: number
+  filter: string
+  eventId: string
+}) {
+  try {
+    const candidates = await prisma.candidate.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: {
+        fullName: { contains: filter },
+        eventId,
+      },
+      orderBy: {
+        number: 'asc',
+      },
+    })
+    // Need to serialize the competitions array to JSON string before returning
+    // const json = JSON.stringify(competitions, replacer)
 
-//   if (!decoded || typeof decoded === 'string') {
-//     return null;
-//   }
-
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       id: decoded.id,
-//     },
-//     include: {
-//       event: true,
-//       competitions: {
-//         select: {
-//           id: true,
-//           name: true,
-//         },
-//       },
-//     },
-//     omit: {
-//       password: true,
-//       createdAt: true,
-//       email: true,
-//       eventId: true,
-//     },
-//   });
-
-//   return user;
-// }
+    return {
+      success: true,
+      message: 'Candidates successfully fetched',
+      candidates,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      success: false,
+      message: 'Error fetching candidates',
+      user: null,
+    }
+  }
+}
 
 export async function createCandidateDb(
   candidate: Omit<CandidateNoCreatedAt, 'id'>,

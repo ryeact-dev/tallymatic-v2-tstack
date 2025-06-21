@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import {
   deleteCompetitionDb,
-  getAllCompetitionsDb,
+  getEventCompetitionsDb,
   toggleCompetitionDb,
   updateCompetitionDb,
 } from '../db-access/competition.db.access'
@@ -15,11 +15,11 @@ import {
 } from '~/zod/validator.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
 
-export const getAllCompetitionsServerFn = createServerFn()
+export const getAllCandidatesServerFn = createServerFn()
   .middleware([authenticatedMiddleware])
   .validator(getAllCompetitionsSchema)
   .handler(async ({ data }) => {
-    return await getAllCompetitionsDb({
+    return await getEventCompetitionsDb({
       page: data.page,
       limit: data.limit,
       filter: data.filter || '',
