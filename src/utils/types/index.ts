@@ -1,5 +1,12 @@
 import type { Candidate, Event, User } from '~/generated/prisma/client'
 
+export interface QueryParams {
+  filter: string
+  page: number
+  limit: number
+  eventId?: string
+}
+
 // Add this type to match the omitted fields
 // export type SafeUser = Omit<User, 'email' | 'createdAt' | 'password'>;
 export type CandidateNoCreatedAt = Omit<Candidate, 'createdAt'>
