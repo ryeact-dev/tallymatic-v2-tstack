@@ -12,6 +12,12 @@ export const baseValidationSchema = z.object({
   filter: z.string().optional(),
 })
 
+export const deleteBaseSchema = z.object({
+  id: z.string().min(3, 'User ID is required'),
+})
+
+export type DeleteBaseType = z.infer<typeof deleteBaseSchema>
+
 // Event Validation Schema
 export const updateEventSchema = z.object({
   id: z.string().min(3, 'Event ID is required'),

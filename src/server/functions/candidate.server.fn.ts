@@ -2,12 +2,14 @@ import { createServerFn } from '@tanstack/react-start'
 
 import {
   createCandidateDb,
+  deleteCandidateDb,
   getEventCandidatesDb,
   updateCandidateDb,
 } from '../db-access/candidate.db.access'
 import { authenticatedMiddleware } from '~/utils/middlewares'
 import {
   candidateValidationSchema,
+  deleteBaseSchema,
   getAllCompetitionsSchema,
 } from '~/zod/validator.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
@@ -38,4 +40,11 @@ export const updateCandidateServerFn = createServerFn({ method: 'POST' })
   .validator(candidateValidationSchema)
   .handler(async ({ data }) => {
     return await updateCandidateDb(data)
+  })
+
+export const deleteCandidateServerFn = createServerFn({ method: 'POST' })
+  .middleware([authenticatedMiddleware])
+  .validator(deleteBaseSchema)
+  .handler(async ({ data }) => {
+    return await deleteCandidateDb(data)
   })

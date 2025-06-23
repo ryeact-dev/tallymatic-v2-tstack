@@ -3,6 +3,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
+
 import type {
   ApiResponse,
   ErrorWithDataResponse,
@@ -10,9 +11,12 @@ import type {
 } from '~/utils/types'
 import type { CandidateFormValues } from '~/zod/form.schema'
 import type { Candidate } from '~/generated/prisma/client'
+import type { DeleteBaseType } from '~/zod/validator.schema'
+
 import ToastNotification from '~/components/toast-notification/ToastNotification'
 import {
   createCandidateServerFn,
+  deleteCandidateServerFn,
   getEventCandidatesServerFn,
   updateCandidateServerFn,
 } from '~/server/functions/candidate.server.fn'
@@ -116,39 +120,39 @@ export function updateCandidateMutation(
   })
 }
 
-// export function useDeleteEventMutation(onClose: () => void) {
-//   const queryClient = useQueryClient();
+export function useDeleteCandidateMutation(onClose: () => void) {
+  const queryClient = useQueryClient()
 
-//   return useMutation<ApiResponse, ErrorWithDataResponse, { id: string }>({
-//     mutationFn: (data) => deleteEventServerFn({ data }),
+  return useMutation<ApiResponse, ErrorWithDataResponse, DeleteBaseType>({
+    mutationFn: (data) => deleteCandidateServerFn({ data }),
 
-//     onError: ({ data }) => {
-//       return ToastNotification({
-//         color: 'Danger',
-//         title: 'Event delete',
-//         description: data.message,
-//       });
-//     },
-//     onSuccess: (data) => {
-//       if (!data.success) {
-//         return ToastNotification({
-//           color: 'Danger',
-//           title: 'Event delete',
-//           description: data.message,
-//         });
-//       }
+    onError: ({ data }) => {
+      return ToastNotification({
+        color: 'Danger',
+        title: 'Candidate delete',
+        description: data.message,
+      })
+    },
+    onSuccess: (data) => {
+      if (!data.success) {
+        return ToastNotification({
+          color: 'Danger',
+          title: 'Candidate delete',
+          description: data.message,
+        })
+      }
 
-//       ToastNotification({
-//         color: 'Success',
-//         title: 'Event delete',
-//         description: data.message,
-//       });
+      ToastNotification({
+        color: 'Success',
+        title: 'Candidate delete',
+        description: data.message,
+      })
 
-//       queryClient.invalidateQueries({
-//         queryKey: [...eventQueries.all, 'list'],
-//       });
+      queryClient.invalidateQueries({
+        queryKey: [...candidateQueries.all, 'list'],
+      })
 
-//       onClose();
-//     },
-//   });
-// }
+      onClose()
+    },
+  })
+}

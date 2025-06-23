@@ -1,4 +1,5 @@
 import type { CandidateNoCreatedAt } from '~/utils/types'
+import type { DeleteBaseType } from '~/zod/validator.schema'
 import { prisma } from '~/utils/prisma'
 
 export async function getEventCandidatesDb({
@@ -138,6 +139,31 @@ export async function updateCandidateDb(candidate: CandidateNoCreatedAt) {
     return {
       success: false,
       message: 'Error updating candiddate',
+      // candidate: null,
+    }
+  }
+}
+
+export async function deleteCandidateDb(data: DeleteBaseType) {
+  try {
+    const deletedCandidate = await prisma.candidate.delete({
+      where: {
+        id: data.id,
+      },
+    })
+
+    console.log(`Candidate ${deletedCandidate.fullName} successfully deleted`)
+
+    return {
+      success: true,
+      message: 'Candidate deleted successfully',
+      // candidate: deletedCandidate,
+    }
+  } catch (error) {
+    console.error(error)
+    return {
+      success: false,
+      message: 'Error deleting candidate',
       // candidate: null,
     }
   }
