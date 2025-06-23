@@ -108,14 +108,13 @@ export type EventFormValues = z.infer<typeof eventSchema>
 
 // Candidate Schema
 export const candidateBaseSchema = z.object({
-  id: z.string().optional(),
   fullName: z.string().min(3, 'Full name must be at least 3 characters'),
   number: z.coerce
     .number({ invalid_type_error: 'Must be an integer' })
     .gt(0, 'Must be greater than 0'),
   course: z.string().min(3, 'Course name must be at least 3 characters'),
   photo: z.string().min(1, 'Photo must be at least 1 character'),
-  eventId: z.string(),
+  eventId: z.string().min(1, 'Event ID is required'),
 })
 
 export type CandidateFormValues = z.infer<typeof candidateBaseSchema>

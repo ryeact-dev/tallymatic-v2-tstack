@@ -1,14 +1,18 @@
 import { z } from 'zod'
-import { competitionBaseSchema, userBaseSchema } from './form.schema'
+import {
+  candidateBaseSchema,
+  competitionBaseSchema,
+  userBaseSchema,
+} from './form.schema'
 
-// Base Schema
+// Base Validation Schema
 export const baseValidationSchema = z.object({
   page: z.number().min(1),
   limit: z.number().min(10),
   filter: z.string().optional(),
 })
 
-// Event Schema
+// Event Validation Schema
 export const updateEventSchema = z.object({
   id: z.string().min(3, 'Event ID is required'),
   name: z.string().min(3, 'Username must be at least 3 characters'),
@@ -48,7 +52,7 @@ export const resetUserPasswordSchema = z.object({
   newPassword: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
-// Competition Schema
+// Competition Validation Schema
 export const createCompetitionSchema = competitionBaseSchema.extend({
   eventId: z.string().min(3, 'Event ID is required'),
   criteria: z.array(
@@ -66,4 +70,9 @@ export const toggleCompetitionSchema = z.object({
 
 export const getAllCompetitionsSchema = baseValidationSchema.extend({
   eventId: z.string().optional(),
+})
+
+// Candidate Validation Schema
+export const candidateValidationSchema = candidateBaseSchema.extend({
+  id: z.string().min(1, 'Candidate ID is required'),
 })
