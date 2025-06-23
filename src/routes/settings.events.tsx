@@ -78,9 +78,12 @@ function RouteComponent() {
     direction: 'ascending',
   })
 
-  const onPageChangeHandler = (page: number) => {
-    navigate({ to: '.', search: { page, filter, sort } })
-  }
+  const onPageChangeHandler = useCallback(
+    (newPage: number) => {
+      navigate({ to: '.', search: { page: newPage, filter, sort } })
+    },
+    [navigate],
+  )
 
   const hasSearchFilter = Boolean(filter)
 

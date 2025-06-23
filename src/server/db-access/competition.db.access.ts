@@ -18,8 +18,12 @@ export async function getEventCompetitionsDb({
       skip: (page - 1) * limit,
       take: limit,
       where: {
-        name: { contains: filter },
-        eventId,
+        AND: [
+          {
+            name: { contains: filter },
+          },
+          ...(eventId.trim() ? [{ eventId }] : []),
+        ],
       },
       orderBy: {
         number: 'asc',

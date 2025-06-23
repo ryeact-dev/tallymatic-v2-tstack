@@ -26,7 +26,7 @@ export const Route = createFileRoute('/settings/users')({
     )
 
     if (context.user?.role === 'admin') {
-      const { events } = await context.queryClient.ensureQueryData(
+      const events = await context.queryClient.ensureQueryData(
         eventQueries.list({
           page: 1,
           limit: 20,
@@ -49,7 +49,7 @@ function RouteComponent() {
   const navigate = useNavigate()
   const { user } = Route.useRouteContext()
 
-  const { filter, page, tab, sort } = Route.useSearch()
+  const { filter, page, tab, sort, limit } = Route.useSearch()
   const { data: users } = useSuspenseQuery(
     userQueries.list({
       page: Number(page),
@@ -58,14 +58,23 @@ function RouteComponent() {
     }),
   )
 
-  const onTabChangeHandler = (tabKey: userTabOptions) => {
-    navigate({ to: '.', search: { filter, page: 1, tab: tabKey } })
-  }
+  const onTabChangeHandler = useCallback(
+    (tabKey: userTabOptions) => {
+      navigate({
+        to: '.',
+        search: { page: 1, tab: tabKey, filter, sort, limit },
+      })
+    },
+    [navigate],
+  )
 
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
-        navigate({ to: '.', search: { page: 1, filter: value, sort } })
+        navigate({
+          to: '.',
+          search: { page: 1, tab, filter: value, sort, limit },
+        })
       }, 300),
     [navigate, sort],
   )
@@ -76,28 +85,34 @@ function RouteComponent() {
       if (value) {
         debouncedSearch(value)
       } else {
-        navigate({ to: '.', search: { page: 1, filter: '', sort } })
+        navigate({
+          to: '.',
+          search: { page: 1, tab, filter: value, sort, limit },
+        })
       }
     },
     [debouncedSearch, page, sort],
   )
 
   const onClearHandler = useCallback(() => {
-    navigate({ to: '.', search: { page: 1, filter: '', sort } })
+    navigate({ to: '.', search: { page: 1, tab, filter: '', sort, limit } })
   }, [])
 
-  const managers = useCallback(
-    users?.filter(
-      (usersList: UserWithEventAndCompetitions) => usersList.role === 'manager',
-    ),
+  const managers = useMemo(
+    () =>
+      users.filter(
+        (usersList: UserWithEventAndCompetitions) =>
+          usersList.role === 'manager',
+      ),
     [users],
   )
 
-  const judgesAndTabulators = useCallback(
-    users?.filter(
-      (usersList: UserWithEventAndCompetitions) =>
-        usersList.role === 'judge' || usersList.role === 'tabulator',
-    ),
+  const judgesAndTabulators = useMemo(
+    () =>
+      users.filter(
+        (usersList: UserWithEventAndCompetitions) =>
+          usersList.role === 'judge' || usersList.role === 'tabulator',
+      ),
     [users],
   )
 

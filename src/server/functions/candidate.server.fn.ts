@@ -1,30 +1,29 @@
 import { createServerFn } from '@tanstack/react-start'
-import { z } from 'zod'
+
 import {
-  deleteCompetitionDb,
-  getEventCompetitionsDb,
-  toggleCompetitionDb,
-  updateCompetitionDb,
-} from '../db-access/competition.db.access'
-import { createCandidateDb } from '../db-access/candidate.db.access'
+  createCandidateDb,
+  getEventCandidatesDb,
+  updateCandidateDb,
+} from '../db-access/candidate.db.access'
 import { authenticatedMiddleware } from '~/utils/middlewares'
 import {
-  createCompetitionSchema,
+  candidateValidationSchema,
   getAllCompetitionsSchema,
-  toggleCompetitionSchema,
 } from '~/zod/validator.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
 
-export const getAllCandidatesServerFn = createServerFn()
+export const getEventCandidatesServerFn = createServerFn()
   .middleware([authenticatedMiddleware])
   .validator(getAllCompetitionsSchema)
   .handler(async ({ data }) => {
-    return await getEventCompetitionsDb({
+    const res = await getEventCandidatesDb({
       page: data.page,
       limit: data.limit,
       filter: data.filter || '',
       eventId: data.eventId || '',
     })
+
+    return res.candidates
   })
 
 export const createCandidateServerFn = createServerFn({ method: 'POST' })
@@ -34,23 +33,9 @@ export const createCandidateServerFn = createServerFn({ method: 'POST' })
     return await createCandidateDb(data)
   })
 
-export const updateCompetitionServerFn = createServerFn({ method: 'POST' })
+export const updateCandidateServerFn = createServerFn({ method: 'POST' })
   .middleware([authenticatedMiddleware])
-  .validator(createCompetitionSchema)
+  .validator(candidateValidationSchema)
   .handler(async ({ data }) => {
-    return await updateCompetitionDb(data)
-  })
-
-export const toggleCompetitionServerFn = createServerFn({ method: 'POST' })
-  .middleware([authenticatedMiddleware])
-  .validator(toggleCompetitionSchema)
-  .handler(async ({ data }) => {
-    return await toggleCompetitionDb(data)
-  })
-
-export const deleteCompetitionServerFn = createServerFn({ method: 'POST' })
-  .middleware([authenticatedMiddleware])
-  .validator(z.object({ id: z.string() }))
-  .handler(async ({ data }) => {
-    return await deleteCompetitionDb(data)
+    return await updateCandidateDb(data)
   })

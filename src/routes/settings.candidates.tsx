@@ -19,13 +19,23 @@ import {
   User,
 } from '@heroui/react'
 
-import { CalendarIcon, EllipsisVerticalIcon, SearchIcon } from 'lucide-react'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import {
+  CalendarIcon,
+  EllipsisVerticalIcon,
+  SearchIcon,
+  SquareAsteriskIcon,
+  SquarePenIcon,
+  TrashIcon,
+} from 'lucide-react'
 import type { ChipProps, Selection, SortDescriptor } from '@heroui/react'
 import type { CandidateNoCreatedAt } from '~/utils/types'
+import type { Candidate } from '~/generated/prisma/client'
 import ToastNotification from '~/components/toast-notification/ToastNotification'
 import { openModal, openSheet } from '~/store'
 import { searchSchema } from '~/zod/search.schema'
 import { debounce } from '~/utils/debounce'
+import { candidateQueries } from '~/hooks/candidate.hook'
 
 export const columns = [
   { name: 'NO.', uid: 'number', sortable: true },
@@ -42,15 +52,16 @@ const statusColorMap: Record<string, ChipProps['color']> = {
 export const Route = createFileRoute('/settings/candidates')({
   validateSearch: (search) => searchSchema.parse(search),
   loaderDeps: ({ search: { page, filter } }) => ({ page, filter }),
-  // loader: async ({ context, deps: { filter, page } }) => {
-  //   await context.queryClient.ensureQueryData(
-  //     eventQueries.list({
-  //       page,
-  //       limit: 20,
-  //       filter,
-  //     })
-  //   );
-  // },
+  loader: async ({ context, deps: { filter, page } }) => {
+    await context.queryClient.ensureQueryData(
+      candidateQueries.list({
+        page,
+        limit: 20,
+        filter,
+        eventId: context.user?.event?.id || '',
+      }),
+    )
+  },
   head: () => ({
     meta: [{ title: 'Tallymatic | Settings - Events' }],
   }),
@@ -59,17 +70,17 @@ export const Route = createFileRoute('/settings/candidates')({
 
 function RouteComponent() {
   const navigate = useNavigate()
+  const { user } = Route.useRouteContext()
   const { filter, page, sort } = Route.useSearch()
 
-  // const { data: events } = useSuspenseQuery(
-  //   eventQueries.list({
-  //     page,
-  //     limit: 20,
-  //     filter: '',
-  //   })
-  // );
-
-  const events: any = []
+  const { data: candidates = [] } = useSuspenseQuery(
+    candidateQueries.list({
+      page,
+      limit: 20,
+      filter: '',
+      eventId: user?.event?.id || '',
+    }),
+  )
 
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -77,23 +88,23 @@ function RouteComponent() {
     direction: 'ascending',
   })
 
-  const onPageChangeHandler = (page: number) => {
-    navigate({ to: '.', search: { page, filter, sort } })
+  const onPageChangeHandler = (pageValue: number) => {
+    navigate({ to: '.', search: { page: pageValue, filter, sort } })
   }
 
   const hasSearchFilter = Boolean(filter)
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...events]
+    let filteredUsers = [...(candidates || [])]
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filter.toLowerCase()),
+        user.fullName.toLowerCase().includes(filter.toLowerCase()),
       )
     }
 
     return filteredUsers
-  }, [events, filter])
+  }, [candidates, filter])
 
   const rowsPerPage = 20
   const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1
@@ -106,9 +117,9 @@ function RouteComponent() {
   }, [page, filteredItems, rowsPerPage])
 
   const sortedItems = useMemo(() => {
-    return [...items].sort((a: Event, b: Event) => {
-      const first = a[sortDescriptor.column as keyof Event]
-      const second = b[sortDescriptor.column as keyof Event]
+    return [...items].sort((a: Candidate, b: Candidate) => {
+      const first = a[sortDescriptor.column as keyof Candidate]
+      const second = b[sortDescriptor.column as keyof Candidate]
 
       let cmp = 0
       if (typeof first === 'number' && typeof second === 'number') {
@@ -125,18 +136,21 @@ function RouteComponent() {
     })
   }, [sortDescriptor, items])
 
-  const onEditCandidateHandler = (candidate: CandidateNoCreatedAt) => {
-    openSheet({
-      data: {
-        type: 'candidate',
-        data: candidate,
-      },
-      isSheetOpen: true,
-      size: 'sm',
-    })
-  }
+  const onEditCandidateHandler = useCallback(
+    (candidate: CandidateNoCreatedAt) => {
+      openSheet({
+        data: {
+          type: 'candidate',
+          data: candidate,
+        },
+        isSheetOpen: true,
+        size: 'sm',
+      })
+    },
+    [],
+  )
 
-  const onAddCandidateHandler = () => {
+  const onAddCandidateHandler = useCallback(() => {
     openSheet({
       title: 'Candidate Details',
       data: {
@@ -146,7 +160,7 @@ function RouteComponent() {
       isSheetOpen: true,
       size: 'sm',
     })
-  }
+  }, [])
 
   const onDeleteCandidateHandler = (candidate: CandidateNoCreatedAt) => {
     openModal({
@@ -189,11 +203,11 @@ function RouteComponent() {
 
       switch (columnKey) {
         case 'number':
-          return <div className="flex flex-col">{candidate.fullName}</div>
+          return <div className="flex flex-col">{candidate.number}</div>
         case 'name':
           return (
             <User
-              avatarProps={{ radius: 'lg', src: candidate.photo }}
+              avatarProps={{ radius: 'full', src: candidate.photo }}
               description={candidate.course}
               name={candidate.fullName}
             />
@@ -207,16 +221,21 @@ function RouteComponent() {
                     <EllipsisVerticalIcon className="text-default-300" />
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu>
+                <DropdownMenu color="primary">
                   <DropdownItem
                     key="edit"
                     onClick={() => onEditCandidateHandler(candidate)}
+                    startContent={<SquarePenIcon className="h-4 w-4" />}
                   >
                     Edit
                   </DropdownItem>
+
                   <DropdownItem
+                    className="text-danger hover:text-white"
+                    color="danger"
                     key="delete"
                     onClick={() => onDeleteCandidateHandler(candidate)}
+                    startContent={<TrashIcon className="h-4 w-4" />}
                   >
                     Delete
                   </DropdownItem>
@@ -263,7 +282,7 @@ function RouteComponent() {
         </div>
       </div>
     )
-  }, [filter, onSearchChange, events.length, hasSearchFilter])
+  }, [filter, onSearchChange, candidates?.length, hasSearchFilter])
 
   const bottomContent = useMemo(() => {
     return (

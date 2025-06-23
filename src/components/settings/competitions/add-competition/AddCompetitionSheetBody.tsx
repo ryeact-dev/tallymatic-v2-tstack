@@ -19,7 +19,7 @@ import {
 
 interface CompetitionSheetProps {
   onClose: () => void
-  compInfo: UserCompetition
+  compInfo: UserCompetition | null
 }
 
 const DEFAULT_VALUES: CompetitionFormValues = {
@@ -39,7 +39,7 @@ export default function AddCompetitionSheetBody({
   const { user } = routeApi.useRouteContext()
 
   const [criteria, setCriteria] = useState<Array<CriteriaItem>>(
-    compInfo.criteria.length > 0
+    compInfo && compInfo.criteria.length > 0
       ? (compInfo.criteria as unknown as Array<CriteriaItem>)
       : [{ criteriaTitle: '', percent: 0 }],
   )
@@ -53,7 +53,7 @@ export default function AddCompetitionSheetBody({
     formState: { errors },
   } = useForm<CompetitionFormValues>({
     resolver: zodResolver(competitionSchema),
-    defaultValues: compInfo.id ? compInfo : DEFAULT_VALUES,
+    defaultValues: compInfo ? compInfo : DEFAULT_VALUES,
   })
 
   const handleRemoveCriteria = () => {
@@ -83,7 +83,7 @@ export default function AddCompetitionSheetBody({
     useUpdateCompetitionMutation(onResetForm, onClose)
 
   const onSubmit: SubmitHandler<CompetitionFormValues> = (data) => {
-    if (!user.event?.id) {
+    if (!user?.event?.id) {
       return ToastNotification({
         title: 'Adding Competition',
         description: 'Please select an event',
@@ -116,7 +116,7 @@ export default function AddCompetitionSheetBody({
       })
     }
 
-    compInfo.id
+    compInfo
       ? updateCompetitionMutate({
           ...data,
           criteria,

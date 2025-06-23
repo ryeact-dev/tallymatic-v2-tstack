@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt'
 import type { CandidateNoCreatedAt } from '~/utils/types'
 import { prisma } from '~/utils/prisma'
 
@@ -38,7 +37,7 @@ export async function getEventCandidatesDb({
     return {
       success: false,
       message: 'Error fetching candidates',
-      user: null,
+      candidates: null,
     }
   }
 }
@@ -82,15 +81,64 @@ export async function createCandidateDb(
 
     return {
       success: true,
-      message: 'User logged in successfully',
+      message: 'Candidate added successfully',
       // can: userData,
     }
   } catch (error) {
     console.error(error)
     return {
       success: false,
-      message: 'Error logging in',
-      user: null,
+      message: 'Error creating candidate',
+      // candidarte: null,
+    }
+  }
+}
+
+export async function updateCandidateDb(candidate: CandidateNoCreatedAt) {
+  try {
+    const foundCandidate = await prisma.candidate.findFirst({
+      where: {
+        AND: [
+          {
+            eventId: candidate.eventId,
+            OR: [
+              { fullName: candidate.fullName },
+              { number: candidate.number },
+            ],
+          },
+        ],
+      },
+    })
+    if (foundCandidate && foundCandidate.id !== candidate.id) {
+      return {
+        success: false,
+        message: 'Candidate name/number already exists',
+      }
+    }
+    const newCandidate = await prisma.candidate.update({
+      where: {
+        id: candidate.id,
+      },
+      data: {
+        fullName: candidate.fullName,
+        number: candidate.number,
+        course: candidate.course,
+        photo: candidate.photo,
+        eventId: candidate.eventId,
+      },
+    })
+    console.log(`Candidate ${newCandidate.fullName} successfully updated`)
+    return {
+      success: true,
+      message: 'Candidate updated successfully',
+      // can: userData,
+    }
+  } catch (error) {
+    console.error(error)
+    return {
+      success: false,
+      message: 'Error updating candiddate',
+      // candidate: null,
     }
   }
 }

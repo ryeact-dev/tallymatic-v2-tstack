@@ -11,8 +11,12 @@ import type { CandidateFormValues } from '~/zod/form.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
 import { useUpdateUserMutation } from '~/hooks/user.hooks'
 import ImageCropperModal from '~/components/image-cropper/ImageCropper'
-import { useCreateCandidateMutation } from '~/hooks/candidate.hook'
+import {
+  updateCandidateMutation,
+  useCreateCandidateMutation,
+} from '~/hooks/candidate.hook'
 import { cn } from '~/utils/cn'
+import { useUpdateCompetitionMutation } from '~/hooks/competition.hook'
 
 interface CandidateFormProps {
   onClose: () => void
@@ -20,7 +24,6 @@ interface CandidateFormProps {
 }
 
 const DEFAULT_VALUES: CandidateFormValues = {
-  id: '',
   fullName: '',
   number: 0,
   course: '',
@@ -57,8 +60,8 @@ export default function AddCandidateSheetBody({
   const { mutate: createCandidateMutate, isPending: isCreatingCandidate } =
     useCreateCandidateMutation(onResetForm, onClose)
 
-  const { mutate: updateUserMutate, isPending: isUpdatingUser } =
-    useUpdateUserMutation(onResetForm, onClose)
+  const { mutate: updateCandidateMutate, isPending: isUpdatingCandidate } =
+    updateCandidateMutation(onResetForm, onClose)
 
   const onSubmit: SubmitHandler<CandidateFormValues> = (data) => {
     const newUserData = {
@@ -68,8 +71,7 @@ export default function AddCandidateSheetBody({
     }
 
     if (candidateInfo) {
-      // updateUserMutate(newUserData);
-      console.log('update')
+      updateCandidateMutate(newUserData)
     } else {
       createCandidateMutate(newUserData)
     }
@@ -187,13 +189,13 @@ export default function AddCandidateSheetBody({
             type="button"
             variant="light"
             onPress={onClose}
-            disabled={isCreatingCandidate || isUpdatingUser}
+            disabled={isCreatingCandidate || isUpdatingCandidate}
           >
             Close
           </Button>
           <Button
-            disabled={isCreatingCandidate || isUpdatingUser}
-            isLoading={isCreatingCandidate || isUpdatingUser}
+            disabled={isCreatingCandidate || isUpdatingCandidate}
+            isLoading={isCreatingCandidate || isUpdatingCandidate}
             color="primary"
             type="submit"
             className="w-40"

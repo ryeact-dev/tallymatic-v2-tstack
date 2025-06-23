@@ -21,7 +21,7 @@ export const logMiddleware = createMiddleware({ type: 'function' }).server(
 )
 
 export const authenticatedMiddleware = createMiddleware({ type: 'function' })
-  .middleware([logMiddleware])
+  // .middleware([logMiddleware])
   .server(async ({ next, data }) => {
     const user = await getCurrentUserServerFn()
 
@@ -37,7 +37,7 @@ export const authenticatedMiddleware = createMiddleware({ type: 'function' })
   })
 
 export const adminMiddleware = createMiddleware({ type: 'function' })
-  .middleware([logMiddleware])
+  // .middleware([logMiddleware])
   .server(async ({ next }) => {
     const user = await getCurrentUserServerFn()
 

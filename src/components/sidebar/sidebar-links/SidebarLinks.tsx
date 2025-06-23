@@ -15,7 +15,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
         <h2 className="text-sm font-medium">Active Competitions</h2>
         <Link
           to="/settings/candidates"
-          search={{ filter: '' }}
+          search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <Users2Icon size={18} />
@@ -24,7 +24,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
 
         <Link
           to="/settings/competitions"
-          search={{ filter: '', page: 1, sort: 'a-z' }}
+          search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <ClapperboardIcon size={18} />
@@ -34,7 +34,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
         {user.role === 'admin' && (
           <Link
             to="/settings/events"
-            search={{ filter: '', page: 1, sort: 'a-z' }}
+            search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
             className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
           >
             <CalendarCogIcon size={18} />
@@ -44,7 +44,13 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
 
         <Link
           to="/settings/users"
-          search={{ filter: '', tab: 'judges', page: 1, sort: 'a-z' }}
+          search={{
+            filter: '',
+            tab: 'judges',
+            page: 1,
+            sort: 'a-z',
+            limit: 10,
+          }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <UserIcon size={18} />
@@ -57,7 +63,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
         <h2 className="text-sm font-medium">Results</h2>
         <Link
           to="/settings/candidates"
-          search={{ filter: '' }}
+          search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <Users2Icon size={18} />
@@ -70,7 +76,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
         <h2 className="text-sm font-medium">Settings</h2>
         <Link
           to="/settings/candidates"
-          search={{ filter: '' }}
+          search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <Users2Icon size={18} />
@@ -79,7 +85,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
 
         <Link
           to="/settings/competitions"
-          search={{ filter: '', page: 1, sort: 'a-z' }}
+          search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <ClapperboardIcon size={18} />
@@ -89,7 +95,7 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
         {user.role === 'admin' && (
           <Link
             to="/settings/events"
-            search={{ filter: '', page: 1, sort: 'a-z' }}
+            search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
             className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
           >
             <CalendarCogIcon size={18} />
@@ -99,7 +105,13 @@ export default function SidebarLinks({ user }: { user: CurrentUser }) {
 
         <Link
           to="/settings/users"
-          search={{ filter: '', tab: 'judges', page: 1, sort: 'a-z' }}
+          search={{
+            filter: '',
+            tab: 'judges',
+            page: 1,
+            sort: 'a-z',
+            limit: 10,
+          }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
         >
           <UserIcon size={18} />
