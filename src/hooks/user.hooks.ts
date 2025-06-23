@@ -6,6 +6,7 @@ import {
 import type {
   ApiResponse,
   ErrorWithDataResponse,
+  QueryParams,
   UserWithEventAndCompetitions,
 } from '~/utils/types'
 
@@ -22,22 +23,11 @@ import {
 
 export const userQueries = {
   all: ['users'] as const,
-  list: ({
-    page,
-    limit,
-    filter,
-  }: {
-    page: number
-    limit: number
-    filter: string
-  }) =>
-    queryOptions({
-      queryKey: [...userQueries.all, 'list', page, limit, filter],
-      queryFn: () => getAllUsersServerFn({ data: { page, limit, filter } }),
-      select: (data) => {
-        // Parse the JSON string from server response into an array of objects
-        return JSON.parse(data.users)
-      },
+  list: (params: QueryParams) =>
+    queryOptions<Array<UserWithEventAndCompetitions>>({
+      queryKey: [...userQueries.all, 'list', params],
+      queryFn: () => getAllUsersServerFn({ data: params }),
+      placeholderData: (previewData) => previewData,
       retry: 0,
     }),
 }

@@ -4,7 +4,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import type { EventFormValues } from '~/zod/form.schema'
-import type { ApiResponse, ErrorWithDataResponse } from '~/utils/types'
+import type {
+  ApiResponse,
+  ErrorWithDataResponse,
+  EventWithUsers,
+  QueryParams,
+} from '~/utils/types'
 import type { Event } from '~/generated/prisma/client'
 import ToastNotification from '~/components/toast-notification/ToastNotification'
 import {
@@ -16,19 +21,11 @@ import {
 
 export const eventQueries = {
   all: ['events'] as const,
-  list: ({
-    page,
-    limit,
-    filter,
-  }: {
-    page: number
-    limit: number
-    filter: string
-  }) =>
-    queryOptions({
-      queryKey: [...eventQueries.all, 'list', page, limit, filter],
-      queryFn: () => getAllEventsServerFn({ data: { page, limit, filter } }),
-      select: (data) => data.events,
+  list: (params: QueryParams) =>
+    queryOptions<Array<EventWithUsers>>({
+      queryKey: [...eventQueries.all, 'list', params],
+      queryFn: () => getAllEventsServerFn({ data: params }),
+      placeholderData: (previewData) => previewData,
       retry: 0,
     }),
 }

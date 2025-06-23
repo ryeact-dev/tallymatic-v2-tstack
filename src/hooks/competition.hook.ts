@@ -3,7 +3,12 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import type { ApiResponse, ErrorWithDataResponse } from '~/utils/types'
+import type {
+  ApiResponse,
+  ErrorWithDataResponse,
+  QueryParams,
+  UserCompetition,
+} from '~/utils/types'
 import type { CreateCompetitionValues } from '~/zod/validator.schema'
 import ToastNotification from '~/components/toast-notification/ToastNotification'
 import {
@@ -16,25 +21,11 @@ import {
 
 export const competitionQueries = {
   all: ['competitions'] as const,
-  list: ({
-    page,
-    limit,
-    filter,
-    eventId,
-  }: {
-    page: number
-    limit: number
-    filter: string
-    eventId: string
-  }) =>
-    queryOptions({
-      queryKey: [...competitionQueries.all, 'list', page, limit, filter],
-      queryFn: () =>
-        getAllCompetitionsServerFn({ data: { page, limit, filter, eventId } }),
-      select: (data) => {
-        // Parse the JSON string from server response into an array of objects
-        return JSON.parse(data.competitions)
-      },
+  list: (params: QueryParams) =>
+    queryOptions<Array<UserCompetition>>({
+      queryKey: [...competitionQueries.all, 'list', params],
+      queryFn: () => getAllCompetitionsServerFn({ data: params }),
+      placeholderData: (previewData) => previewData,
       retry: 0,
     }),
 }

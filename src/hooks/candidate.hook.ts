@@ -3,27 +3,27 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import type { ApiResponse, ErrorWithDataResponse } from '~/utils/types'
+import type {
+  ApiResponse,
+  ErrorWithDataResponse,
+  QueryParams,
+} from '~/utils/types'
 import type { CandidateFormValues } from '~/zod/form.schema'
+import type { Candidate } from '~/generated/prisma/client'
 import ToastNotification from '~/components/toast-notification/ToastNotification'
-import { getAllEventsServerFn } from '~/server/functions/event.server.fn'
-import { createCandidateServerFn } from '~/server/functions/candidate.server.fn'
+import {
+  createCandidateServerFn,
+  getEventCandidatesServerFn,
+  updateCandidateServerFn,
+} from '~/server/functions/candidate.server.fn'
 
 export const candidateQueries = {
   all: ['candidates'] as const,
-  list: ({
-    page,
-    limit,
-    filter,
-  }: {
-    page: number
-    limit: number
-    filter: string
-  }) =>
+  list: (params: QueryParams) =>
     queryOptions({
-      queryKey: [...candidateQueries.all, 'list', page, limit, filter],
-      queryFn: () => getAllEventsServerFn({ data: { page, limit, filter } }),
-      select: (data) => data.events,
+      queryKey: [...candidateQueries.all, 'list', params],
+      queryFn: () => getEventCandidatesServerFn({ data: params }),
+      placeholderData: (previewData) => previewData,
       retry: 0,
     }),
 }
@@ -70,48 +70,51 @@ export function useCreateCandidateMutation(
   })
 }
 
-// export function useUpdateEventMutation(reset: () => void, onClose: () => void) {
-//   const queryClient = useQueryClient();
+export function updateCandidateMutation(
+  reset: () => void,
+  onClose: () => void,
+) {
+  const queryClient = useQueryClient()
 
-//   return useMutation<
-//     ApiResponse,
-//     ErrorWithDataResponse,
-//     Omit<Event, 'createdAt'>
-//   >({
-//     mutationFn: (data) => updateEventServerFn({ data }),
+  return useMutation<
+    ApiResponse,
+    ErrorWithDataResponse,
+    Omit<Candidate, 'createdAt'>
+  >({
+    mutationFn: (data) => updateCandidateServerFn({ data }),
 
-//     onError: ({ data }) => {
-//       return ToastNotification({
-//         color: 'Danger',
-//         title: 'Event update',
-//         description: data.message,
-//       });
-//     },
-//     onSuccess: (data) => {
-//       if (!data.success) {
-//         return ToastNotification({
-//           color: 'Danger',
-//           title: 'Event update',
-//           description: data.message,
-//         });
-//       }
+    onError: ({ data }) => {
+      return ToastNotification({
+        color: 'Danger',
+        title: 'Event update',
+        description: data.message,
+      })
+    },
+    onSuccess: (data) => {
+      if (!data.success) {
+        return ToastNotification({
+          color: 'Danger',
+          title: 'Event update',
+          description: data.message,
+        })
+      }
 
-//       ToastNotification({
-//         color: 'Success',
-//         title: 'Event update',
-//         description: data.message,
-//       });
+      ToastNotification({
+        color: 'Success',
+        title: 'Event update',
+        description: data.message,
+      })
 
-//       queryClient.invalidateQueries({
-//         queryKey: [...eventQueries.all, 'list'],
-//       });
+      queryClient.invalidateQueries({
+        queryKey: [...candidateQueries.all, 'list'],
+      })
 
-//       // Reset form values
-//       reset();
-//       onClose();
-//     },
-//   });
-// }
+      // Reset form values
+      reset()
+      onClose()
+    },
+  })
+}
 
 // export function useDeleteEventMutation(onClose: () => void) {
 //   const queryClient = useQueryClient();
