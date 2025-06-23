@@ -4,7 +4,10 @@ import DeleteEventModalBody from './settings/events/delete-event/DeleteEventModa
 import DeleteUserModalBody from './settings/users/delete-user/DeleteUserModalBody'
 import DeleteCompetitionModalBody from './settings/competitions/delete-competition/DeleteCompetitionModalBody'
 import ResetPasswordModalBody from './settings/users/reset-password/ResetPasswordModalBody'
+import DeleteCandidateModalBody from './settings/candidate/delete-candidate/DeleteCandidateModalBody'
+
 import type { DefaultDataModalObject } from '~/utils/types'
+
 import { closeModal, modalStore } from '~/store'
 
 export default function ConfimationModal() {
@@ -13,6 +16,24 @@ export default function ConfimationModal() {
   let body = <div />
 
   switch (data.type) {
+    case 'delete-competition':
+      body = (
+        <DeleteCompetitionModalBody
+          data={data.data as DefaultDataModalObject}
+          onClose={closeModal}
+        />
+      )
+      break
+
+    case 'delete-candidate':
+      body = (
+        <DeleteCandidateModalBody
+          data={data.data as DefaultDataModalObject}
+          onClose={closeModal}
+        />
+      )
+      break
+
     case 'delete-event':
       body = (
         <DeleteEventModalBody
@@ -25,15 +46,6 @@ export default function ConfimationModal() {
     case 'delete-user':
       body = (
         <DeleteUserModalBody
-          data={data.data as DefaultDataModalObject}
-          onClose={closeModal}
-        />
-      )
-      break
-
-    case 'delete-competition':
-      body = (
-        <DeleteCompetitionModalBody
           data={data.data as DefaultDataModalObject}
           onClose={closeModal}
         />

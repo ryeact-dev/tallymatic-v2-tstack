@@ -22,9 +22,13 @@ export default function DeleteUserModalBody({
     <>
       <ModalBody>
         <p>
-          {`Deleting ${data.name}'s account will delete all the data associated with it.`}
+          Deleting <span className="font-medium">{data.name}'s</span> account
+          will delete all the data associated with it.
         </p>
-        <p>{`Are you sure you want to delete this ${data.name}'s account?`}</p>
+        <p>
+          Are you sure you want to delete this{' '}
+          <span className="font-medium">{data.name}'s</span> account?
+        </p>
       </ModalBody>
       <ModalFooter>
         <ModalButtons
