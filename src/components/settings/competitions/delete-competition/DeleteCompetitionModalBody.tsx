@@ -1,7 +1,7 @@
 import { ModalBody, ModalFooter } from '@heroui/react'
 import type { DefaultDataModalObject } from '~/utils/types'
 import { useDeleteCompetitionMutation } from '~/hooks/competition.hook'
-import ModalButtons from '~/components/modal-buttons/ModalButtons'
+import ModalButtons from '~/components/ModalButtons'
 
 export default function DeleteCompetitionModalBody({
   onClose,

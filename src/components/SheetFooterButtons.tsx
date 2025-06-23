@@ -19,7 +19,7 @@ export default function SheetFooterButtons({
         onPress={onClose}
         disabled={isLoading}
       >
-        <XIcon size={18} /> Close
+        <XIcon size={18} /> Cancel
       </Button>
       <Button
         disabled={isLoading}

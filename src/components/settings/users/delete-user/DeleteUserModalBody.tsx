@@ -1,7 +1,7 @@
 import { ModalBody, ModalFooter } from '@heroui/react'
 import type { DefaultDataModalObject } from '~/utils/types'
-import ModalButtons from '~/components/modal-buttons/ModalButtons'
 import { useDeleteUserMutation } from '~/hooks/user.hooks'
+import ModalButtons from '~/components/ModalButtons'
 
 export default function DeleteUserModalBody({
   onClose,

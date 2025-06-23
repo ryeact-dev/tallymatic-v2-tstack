@@ -20,10 +20,10 @@ import type { CurrentUser } from '~/utils/types/index.ts'
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary.tsx'
 import { NotFound } from '~/components/NotFound.tsx'
 import { authQueries } from '~/hooks/auth.hook.ts'
-import Sidebar from '~/components/Sidebar.tsx'
 import ConfimationModal from '~/components/ConfimationModal.tsx'
 import SheetContainer from '~/components/SheetContainer.tsx'
 import { seo } from '~/utils/seo'
+import Sidebar from '~/components/Sidebar'
 
 interface MyRouterContext {
   queryClient: QueryClient

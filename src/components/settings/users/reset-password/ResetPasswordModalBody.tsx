@@ -5,7 +5,7 @@ import { randomPasswordGenerator } from '~/helpers/random-password-generator'
 
 import { useResetUserPasswordMutation } from '~/hooks/user.hooks'
 import ToastNotification from '~/components/toast-notification/ToastNotification'
-import ModalButtons from '~/components/modal-buttons/ModalButtons'
+import ModalButtons from '~/components/ModalButtons'
 
 export default function ResetPasswordModalBody({
   data,
