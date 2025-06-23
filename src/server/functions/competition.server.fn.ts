@@ -3,7 +3,7 @@ import { z } from 'zod'
 import {
   createCompetitionDb,
   deleteCompetitionDb,
-  getAllCompetitionsDb,
+  getEventCompetitionsDb,
   toggleCompetitionDb,
   updateCompetitionDb,
 } from '../db-access/competition.db.access'
@@ -19,12 +19,15 @@ export const getAllCompetitionsServerFn = createServerFn()
   .middleware([authenticatedMiddleware])
   .validator(getAllCompetitionsSchema)
   .handler(async ({ data }) => {
-    return await getAllCompetitionsDb({
+    const res = await getEventCompetitionsDb({
       page: data.page,
       limit: data.limit,
       filter: data.filter || '',
-      eventId: data.eventId,
+      eventId: data.eventId || '',
     })
+
+    // Parse the JSON string from server response into an array of objects
+    return JSON.parse(res.competitions || '')
   })
 
 export const createCompetitionServerFn = createServerFn({ method: 'POST' })

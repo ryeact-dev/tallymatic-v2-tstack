@@ -21,12 +21,14 @@ export const getAllUsersServerFn = createServerFn()
   .middleware([authenticatedMiddleware])
   .validator(usersListSchema)
   .handler(async ({ context, data }) => {
-    return await getAllUsersDb({
+    const res = await getAllUsersDb({
       page: data.page,
       limit: data.limit,
       filter: data.filter || '',
       user: context.user,
     })
+
+    return JSON.parse(res.users)
   })
 
 export const createUserServerFn = createServerFn()

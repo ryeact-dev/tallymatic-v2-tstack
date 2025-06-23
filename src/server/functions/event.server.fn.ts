@@ -14,11 +14,13 @@ export const getAllEventsServerFn = createServerFn()
   .middleware([adminMiddleware])
   .validator(baseValidationSchema)
   .handler(async ({ data }) => {
-    return await getAllEventsDb({
+    const res = await getAllEventsDb({
       page: data.page,
       limit: data.limit,
       filter: data.filter || '',
     })
+
+    return res.events
   })
 
 export const createEventServerFn = createServerFn({ method: 'POST' })
