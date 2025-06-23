@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { getRouteApi } from '@tanstack/react-router'
 import { Controller, useForm } from 'react-hook-form'
 import { useCallback } from 'react'
-import { CameraOff, PlusCircleIcon } from 'lucide-react'
+import { CameraOff, PlusCircleIcon, SquarePenIcon, XIcon } from 'lucide-react'
 
 import type { CandidateNoCreatedAt } from '~/utils/types'
 import type { SubmitHandler } from 'react-hook-form'
@@ -17,6 +17,7 @@ import {
 } from '~/hooks/candidate.hook'
 import { cn } from '~/utils/cn'
 import { useUpdateCompetitionMutation } from '~/hooks/competition.hook'
+import SheetFooterButtons from '~/components/SheetFooterButtons'
 
 interface CandidateFormProps {
   onClose: () => void
@@ -183,26 +184,11 @@ export default function AddCandidateSheetBody({
           }}
         />
 
-        <div className="flex justify-end gap-4 w-full mt-8">
-          <Button
-            color="danger"
-            type="button"
-            variant="light"
-            onPress={onClose}
-            disabled={isCreatingCandidate || isUpdatingCandidate}
-          >
-            Close
-          </Button>
-          <Button
-            disabled={isCreatingCandidate || isUpdatingCandidate}
-            isLoading={isCreatingCandidate || isUpdatingCandidate}
-            color="primary"
-            type="submit"
-            className="w-40"
-          >
-            {candidateInfo ? 'Update' : 'Submit'}
-          </Button>
-        </div>
+        <SheetFooterButtons
+          data={candidateInfo}
+          onClose={onClose}
+          isLoading={isCreatingCandidate || isUpdatingCandidate}
+        />
       </Form>
       <ImageCropperModal
         isOpen={isOpen}

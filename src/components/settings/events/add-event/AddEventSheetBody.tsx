@@ -10,6 +10,7 @@ import {
   useCreateEventMutation,
   useUpdateEventMutation,
 } from '~/hooks/event.hook'
+import SheetFooterButtons from '~/components/SheetFooterButtons'
 
 interface EventSheetProps {
   onClose: () => void
@@ -102,26 +103,11 @@ export default function AddEventSheetBody({
         }}
       />
 
-      <div className="flex justify-end gap-4 w-full mt-8">
-        <Button
-          color="danger"
-          type="button"
-          variant="light"
-          onPress={onClose}
-          disabled={isCreatingEvent || isUpdatingEvent}
-        >
-          Close
-        </Button>
-        <Button
-          disabled={isCreatingEvent || isUpdatingEvent}
-          isLoading={isCreatingEvent || isUpdatingEvent}
-          color="primary"
-          type="submit"
-          className="w-40"
-        >
-          {eventInfo?.id ? 'Update' : 'Submit'}
-        </Button>
-      </div>
+      <SheetFooterButtons
+        data={eventInfo}
+        onClose={onClose}
+        isLoading={isCreatingEvent || isUpdatingEvent}
+      />
     </Form>
   )
 }

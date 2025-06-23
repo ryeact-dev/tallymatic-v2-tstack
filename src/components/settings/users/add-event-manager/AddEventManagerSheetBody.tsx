@@ -12,6 +12,7 @@ import {
   useUpdateUserMutation,
 } from '~/hooks/user.hooks'
 import { userSchema } from '~/zod/form.schema'
+import SheetFooterButtons from '~/components/SheetFooterButtons'
 
 interface UserFormProps {
   onClose: () => void
@@ -199,26 +200,11 @@ export default function AddEventManagerSheetBody({
         </div>
       )}
 
-      <div className="flex justify-end gap-4 w-full mt-8">
-        <Button
-          color="danger"
-          type="button"
-          variant="light"
-          onPress={onClose}
-          disabled={isCreatingUser || isUpdatingUser}
-        >
-          Close
-        </Button>
-        <Button
-          disabled={isCreatingUser || isUpdatingUser}
-          isLoading={isCreatingUser || isUpdatingUser}
-          color="primary"
-          type="submit"
-          className="w-40"
-        >
-          {userInfo?.id ? 'Update' : 'Submit'}
-        </Button>
-      </div>
+      <SheetFooterButtons
+        data={userInfo}
+        onClose={onClose}
+        isLoading={isCreatingUser || isUpdatingUser}
+      />
     </Form>
   )
 }

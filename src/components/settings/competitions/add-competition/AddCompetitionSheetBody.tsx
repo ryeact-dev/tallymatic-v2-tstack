@@ -16,6 +16,7 @@ import {
   useCreateCompetitionMutation,
   useUpdateCompetitionMutation,
 } from '~/hooks/competition.hook'
+import SheetFooterButtons from '~/components/SheetFooterButtons'
 
 interface CompetitionSheetProps {
   onClose: () => void
@@ -290,26 +291,11 @@ export default function AddCompetitionSheetBody({
         </Card>
       </div>
 
-      <div className="flex justify-end gap-4 w-full mt-8">
-        <Button
-          color="danger"
-          type="button"
-          variant="light"
-          isDisabled={isCreatingCompetition || isUpdatingCompetition}
-          onPress={onClose}
-        >
-          Close
-        </Button>
-        <Button
-          color="primary"
-          type="submit"
-          className="w-40"
-          isDisabled={isCreatingCompetition || isUpdatingCompetition}
-          isLoading={isCreatingCompetition || isUpdatingCompetition}
-        >
-          Submit
-        </Button>
-      </div>
+      <SheetFooterButtons
+        data={compInfo}
+        onClose={onClose}
+        isLoading={isCreatingCompetition || isUpdatingCompetition}
+      />
     </Form>
   )
 }

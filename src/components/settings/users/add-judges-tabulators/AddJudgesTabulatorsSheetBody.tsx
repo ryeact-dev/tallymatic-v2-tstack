@@ -13,6 +13,7 @@ import {
   useUpdateUserMutation,
 } from '~/hooks/user.hooks'
 import { randomPasswordGenerator } from '~/helpers/random-password-generator'
+import SheetFooterButtons from '~/components/SheetFooterButtons'
 
 export const userRoles = [
   {
@@ -249,26 +250,11 @@ export default function AddJudgesTabulatorsSheetBody({
         </div>
       )}
 
-      <div className="flex justify-end gap-4 w-full mt-8">
-        <Button
-          color="danger"
-          type="button"
-          variant="light"
-          onPress={onClose}
-          // disabled={isCreatingEvent || isUpdatingEvent}
-        >
-          Close
-        </Button>
-        <Button
-          // disabled={isCreatingEvent || isUpdatingEvent}
-          // isLoading={isCreatingEvent || isUpdatingEvent}
-          color="primary"
-          type="submit"
-          className="w-40"
-        >
-          {userInfo?.id ? 'Update' : 'Submit'}
-        </Button>
-      </div>
+      <SheetFooterButtons
+        data={userInfo}
+        onClose={onClose}
+        isLoading={isCreatingUser || isUpdatingUser}
+      />
     </Form>
   )
 }
