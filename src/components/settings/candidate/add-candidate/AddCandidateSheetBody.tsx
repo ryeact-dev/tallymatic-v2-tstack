@@ -3,33 +3,23 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { getRouteApi } from '@tanstack/react-router'
 import { Controller, useForm } from 'react-hook-form'
 import { useCallback } from 'react'
-import { CameraOff, PlusCircleIcon, SquarePenIcon, XIcon } from 'lucide-react'
+import { CameraOff, PlusCircleIcon } from 'lucide-react'
 
 import type { CandidateNoCreatedAt } from '~/utils/types'
 import type { SubmitHandler } from 'react-hook-form'
 import type { CandidateFormValues } from '~/zod/form.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
-import { useUpdateUserMutation } from '~/hooks/user.hooks'
 import ImageCropperModal from '~/components/image-cropper/ImageCropper'
 import {
   updateCandidateMutation,
   useCreateCandidateMutation,
 } from '~/hooks/candidate.hook'
 import { cn } from '~/utils/cn'
-import { useUpdateCompetitionMutation } from '~/hooks/competition.hook'
 import SheetFooterButtons from '~/components/SheetFooterButtons'
 
 interface CandidateFormProps {
   onClose: () => void
   candidateInfo: CandidateNoCreatedAt | null
-}
-
-const DEFAULT_VALUES: CandidateFormValues = {
-  fullName: '',
-  number: 0,
-  course: '',
-  photo: '',
-  eventId: '',
 }
 
 const routeApi = getRouteApi('/settings/candidates')
@@ -41,6 +31,14 @@ export default function AddCandidateSheetBody({
   const { user } = routeApi.useRouteContext()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const DEFAULT_VALUES: CandidateFormValues = {
+    fullName: '',
+    number: 0,
+    course: '',
+    photo: '',
+    eventId: user?.event?.id || '',
+  }
 
   const {
     control,
@@ -67,7 +65,6 @@ export default function AddCandidateSheetBody({
   const onSubmit: SubmitHandler<CandidateFormValues> = (data) => {
     const newUserData = {
       ...data,
-      eventId: user?.event?.id || '',
       id: candidateInfo?.id || '',
     }
 
@@ -88,6 +85,8 @@ export default function AddCandidateSheetBody({
     },
     [setValue],
   )
+
+  console.log(errors)
 
   return (
     <>
