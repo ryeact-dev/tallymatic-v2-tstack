@@ -11,11 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as UnauthenticatedRouteImport } from './routes/unauthenticated'
-import { Route as RedirectRouteImport } from './routes/redirect'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DeferredRouteImport } from './routes/deferred'
+import { Route as CompetitionsRouteImport } from './routes/competitions'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SettingsIndexRouteImport } from './routes/settings.index'
 import { Route as SettingsUsersRouteImport } from './routes/settings.users'
 import { Route as SettingsEventsRouteImport } from './routes/settings.events'
 import { Route as SettingsCompetitionsRouteImport } from './routes/settings.competitions'
@@ -31,11 +30,6 @@ const UnauthenticatedRoute = UnauthenticatedRouteImport.update({
   path: '/unauthenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RedirectRoute = RedirectRouteImport.update({
-  id: '/redirect',
-  path: '/redirect',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -46,14 +40,14 @@ const DeferredRoute = DeferredRouteImport.update({
   path: '/deferred',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompetitionsRoute = CompetitionsRouteImport.update({
+  id: '/competitions',
+  path: '/competitions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsUsersRoute = SettingsUsersRouteImport.update({
@@ -79,98 +73,91 @@ const SettingsCandidatesRoute = SettingsCandidatesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/competitions': typeof CompetitionsRoute
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
-  '/redirect': typeof RedirectRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/settings/candidates': typeof SettingsCandidatesRoute
   '/settings/competitions': typeof SettingsCompetitionsRoute
   '/settings/events': typeof SettingsEventsRoute
   '/settings/users': typeof SettingsUsersRoute
-  '/settings': typeof SettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/competitions': typeof CompetitionsRoute
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
-  '/redirect': typeof RedirectRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/settings/candidates': typeof SettingsCandidatesRoute
   '/settings/competitions': typeof SettingsCompetitionsRoute
   '/settings/events': typeof SettingsEventsRoute
   '/settings/users': typeof SettingsUsersRoute
-  '/settings': typeof SettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/competitions': typeof CompetitionsRoute
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
-  '/redirect': typeof RedirectRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/settings/candidates': typeof SettingsCandidatesRoute
   '/settings/competitions': typeof SettingsCompetitionsRoute
   '/settings/events': typeof SettingsEventsRoute
   '/settings/users': typeof SettingsUsersRoute
-  '/settings/': typeof SettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/competitions'
     | '/deferred'
     | '/login'
-    | '/redirect'
     | '/unauthenticated'
     | '/unauthorized'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
     | '/settings/users'
-    | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/competitions'
     | '/deferred'
     | '/login'
-    | '/redirect'
     | '/unauthenticated'
     | '/unauthorized'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
     | '/settings/users'
-    | '/settings'
   id:
     | '__root__'
     | '/'
+    | '/competitions'
     | '/deferred'
     | '/login'
-    | '/redirect'
     | '/unauthenticated'
     | '/unauthorized'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
     | '/settings/users'
-    | '/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CompetitionsRoute: typeof CompetitionsRoute
   DeferredRoute: typeof DeferredRoute
   LoginRoute: typeof LoginRoute
-  RedirectRoute: typeof RedirectRoute
   UnauthenticatedRoute: typeof UnauthenticatedRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   SettingsCandidatesRoute: typeof SettingsCandidatesRoute
   SettingsCompetitionsRoute: typeof SettingsCompetitionsRoute
   SettingsEventsRoute: typeof SettingsEventsRoute
   SettingsUsersRoute: typeof SettingsUsersRoute
-  SettingsIndexRoute: typeof SettingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -189,13 +176,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/redirect': {
-      id: '/redirect'
-      path: '/redirect'
-      fullPath: '/redirect'
-      preLoaderRoute: typeof RedirectRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -210,18 +190,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeferredRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/competitions': {
+      id: '/competitions'
+      path: '/competitions'
+      fullPath: '/competitions'
+      preLoaderRoute: typeof CompetitionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/': {
-      id: '/settings/'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/users': {
@@ -257,16 +237,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CompetitionsRoute: CompetitionsRoute,
   DeferredRoute: DeferredRoute,
   LoginRoute: LoginRoute,
-  RedirectRoute: RedirectRoute,
   UnauthenticatedRoute: UnauthenticatedRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   SettingsCandidatesRoute: SettingsCandidatesRoute,
   SettingsCompetitionsRoute: SettingsCompetitionsRoute,
   SettingsEventsRoute: SettingsEventsRoute,
   SettingsUsersRoute: SettingsUsersRoute,
-  SettingsIndexRoute: SettingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
