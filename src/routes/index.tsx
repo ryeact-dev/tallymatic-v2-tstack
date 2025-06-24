@@ -5,7 +5,7 @@ export const Route = createFileRoute('/')({
     const user = context.user
 
     if (!user) {
-      return redirect({ to: '/login' })
+      throw redirect({ to: '/login' })
     }
 
     return { user }
