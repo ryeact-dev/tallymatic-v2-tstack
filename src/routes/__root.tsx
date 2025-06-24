@@ -16,7 +16,7 @@ import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
-import type { CurrentUser } from '~/utils/types/index.ts'
+import type { CompetitionLink, CurrentUser } from '~/utils/types/index.ts'
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary.tsx'
 import { NotFound } from '~/components/NotFound.tsx'
 import { authQueries } from '~/hooks/auth.hook.ts'
@@ -24,17 +24,34 @@ import ConfimationModal from '~/components/ConfimationModal.tsx'
 import SheetContainer from '~/components/SheetContainer.tsx'
 import { seo } from '~/utils/seo'
 import Sidebar from '~/components/Sidebar'
+import { competitionQueries } from '~/hooks/competition.hook'
 
 interface MyRouterContext {
   queryClient: QueryClient
   user: CurrentUser | null
+  competitionLinks: Array<CompetitionLink> | []
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.ensureQueryData(authQueries.user())
+    const competitions = await context.queryClient.ensureQueryData(
+      competitionQueries.list({
+        filter: '',
+        page: 1,
+        limit: 20,
+        eventId: user?.event?.id || '',
+      }),
+    )
 
-    return { user }
+    const competitionLinks = competitions.map((competition) => ({
+      id: competition.id,
+      name: competition.name,
+      number: competition.number,
+      isActive: competition.isActive,
+    }))
+
+    return { user, competitionLinks }
   },
   head: () => ({
     meta: [

@@ -11,6 +11,13 @@ export interface QueryParams {
 // export type SafeUser = Omit<User, 'email' | 'createdAt' | 'password'>;
 export type CandidateNoCreatedAt = Omit<Candidate, 'createdAt'>
 
+export interface CompetitionLink {
+  id: string
+  name: string
+  number: number
+  isActive: boolean
+}
+
 export interface UserCompetition {
   id?: string
   eventId?: string
