@@ -27,15 +27,29 @@ export default function Header({
       return
     }
 
-    if (pathname.toString().includes('login')) {
-      navigate({ to: '/', replace: true })
-      return
+    switch (user.role) {
+      case 'admin':
+        navigate({
+          to: '/settings/users',
+          search: {
+            filter: '',
+            page: 1,
+            limit: 10,
+            sort: 'a-z',
+            tab: 'judges',
+          },
+          replace: true,
+        })
+        return
+
+      case 'judge':
+        navigate({ to: '/competitions', replace: true })
+        return
+
+      default:
+        break
     }
   }, [user])
-
-  const onLogout = () => {
-    logoutUserMutate(null)
-  }
 
   return (
     <div className="flex gap-2 items-center my-2">
