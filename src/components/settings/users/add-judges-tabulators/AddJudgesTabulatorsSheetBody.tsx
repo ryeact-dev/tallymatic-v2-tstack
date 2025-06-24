@@ -109,8 +109,6 @@ export default function AddJudgesTabulatorsSheetBody({
       id: userInfo?.id || '',
     }
 
-    console.log(newUserData)
-
     if (userInfo) {
       updateUserMutate(newUserData)
     } else {
