@@ -11,4 +11,7 @@ export const userSearchSchema = searchSchema.extend({
   tab: z.enum(['judges', 'managers']).catch('judges'),
 })
 
+export const competitionSearchSchema = z.object({
+  filter: z.string().catch(''),
+})
 // export type EventSearch = z.infer<typeof eventSearchSchema>;
