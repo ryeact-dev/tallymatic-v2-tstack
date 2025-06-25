@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaitingPageRouteImport } from './routes/waiting-page'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as UnauthenticatedRouteImport } from './routes/unauthenticated'
 import { Route as LoginRouteImport } from './routes/login'
@@ -20,6 +21,11 @@ import { Route as SettingsEventsRouteImport } from './routes/settings.events'
 import { Route as SettingsCompetitionsRouteImport } from './routes/settings.competitions'
 import { Route as SettingsCandidatesRouteImport } from './routes/settings.candidates'
 
+const WaitingPageRoute = WaitingPageRouteImport.update({
+  id: '/waiting-page',
+  path: '/waiting-page',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
   path: '/unauthorized',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/waiting-page': typeof WaitingPageRoute
   '/settings/candidates': typeof SettingsCandidatesRoute
   '/settings/competitions': typeof SettingsCompetitionsRoute
   '/settings/events': typeof SettingsEventsRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/waiting-page': typeof WaitingPageRoute
   '/settings/candidates': typeof SettingsCandidatesRoute
   '/settings/competitions': typeof SettingsCompetitionsRoute
   '/settings/events': typeof SettingsEventsRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/waiting-page': typeof WaitingPageRoute
   '/settings/candidates': typeof SettingsCandidatesRoute
   '/settings/competitions': typeof SettingsCompetitionsRoute
   '/settings/events': typeof SettingsEventsRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/unauthenticated'
     | '/unauthorized'
+    | '/waiting-page'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/unauthenticated'
     | '/unauthorized'
+    | '/waiting-page'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/unauthenticated'
     | '/unauthorized'
+    | '/waiting-page'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   UnauthenticatedRoute: typeof UnauthenticatedRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
+  WaitingPageRoute: typeof WaitingPageRoute
   SettingsCandidatesRoute: typeof SettingsCandidatesRoute
   SettingsCompetitionsRoute: typeof SettingsCompetitionsRoute
   SettingsEventsRoute: typeof SettingsEventsRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/waiting-page': {
+      id: '/waiting-page'
+      path: '/waiting-page'
+      fullPath: '/waiting-page'
+      preLoaderRoute: typeof WaitingPageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unauthorized': {
       id: '/unauthorized'
       path: '/unauthorized'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   UnauthenticatedRoute: UnauthenticatedRoute,
   UnauthorizedRoute: UnauthorizedRoute,
+  WaitingPageRoute: WaitingPageRoute,
   SettingsCandidatesRoute: SettingsCandidatesRoute,
   SettingsCompetitionsRoute: SettingsCompetitionsRoute,
   SettingsEventsRoute: SettingsEventsRoute,
