@@ -1,6 +1,7 @@
 import type { CandidateNoCreatedAt } from '~/utils/types'
 import type { DeleteBaseType } from '~/zod/validator.schema'
 import { prisma } from '~/utils/prisma'
+import { replacer } from '~/helpers/server-helpers'
 
 export async function getEventCandidatesDb({
   page,
@@ -24,14 +25,18 @@ export async function getEventCandidatesDb({
       orderBy: {
         number: 'asc',
       },
+      include: {
+        scoresheet: true,
+        // event: true,
+      },
     })
     // Need to serialize the competitions array to JSON string before returning
-    // const json = JSON.stringify(competitions, replacer)
+    const json = JSON.stringify(candidates, replacer)
 
     return {
       success: true,
       message: 'Candidates successfully fetched',
-      candidates,
+      candidates: json,
     }
   } catch (error) {
     console.log(error)
