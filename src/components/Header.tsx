@@ -2,24 +2,27 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { Button } from '@heroui/react'
 import { useEffect } from 'react'
 import { PanelLeftIcon } from 'lucide-react'
-import type { CurrentUser } from '~/utils/types'
-import { useLogoutUserMutation } from '~/hooks/auth.hook'
+import type { CompetitionLink, CurrentUser } from '~/utils/types'
 
 export default function Header({
   user,
   setIsCollapsed,
   isCollapsed,
+  competitionLinks,
 }: {
   user: CurrentUser | null
   setIsCollapsed: (isCollapsed: boolean) => void
   isCollapsed: boolean
+  competitionLinks: Array<CompetitionLink> | []
 }) {
   const navigate = useNavigate()
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
 
-  const { mutate: logoutUserMutate } = useLogoutUserMutation()
+  const activeCompetitionId = competitionLinks.find(
+    (competitionLink) => competitionLink.isActive,
+  )?.id
 
   useEffect(() => {
     if (!user) {
@@ -27,27 +30,18 @@ export default function Header({
       return
     }
 
-    switch (user.role) {
-      case 'admin':
+    if (pathname.includes('login')) {
+      if (user.role === 'judge') {
         navigate({
-          to: '/settings/users',
-          search: {
-            filter: '',
-            page: 1,
-            limit: 10,
-            sort: 'a-z',
-            tab: 'judges',
-          },
+          to: '/competitions',
+          search: { filter: activeCompetitionId || '' },
           replace: true,
         })
         return
+      }
 
-      case 'judge':
-        navigate({ to: '/competitions', replace: true })
-        return
-
-      default:
-        break
+      navigate({ to: '/', replace: true })
+      return
     }
   }, [user])
 
