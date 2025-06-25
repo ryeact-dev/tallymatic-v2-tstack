@@ -17,6 +17,7 @@ export const createRouter = () => {
       },
       scrollRestoration: true,
       defaultPreloadStaleTime: 0,
+      defaultPreload: 'intent',
     }),
     TanstackQuery.getContext().queryClient,
   )
