@@ -12,11 +12,11 @@ export const baseValidationSchema = z.object({
   filter: z.string().optional(),
 })
 
-export const deleteBaseSchema = z.object({
+export const idBaseSchema = z.object({
   id: z.string().min(3, 'User ID is required'),
 })
 
-export type DeleteBaseType = z.infer<typeof deleteBaseSchema>
+export type IdBaseType = z.infer<typeof idBaseSchema>
 
 // Event Validation Schema
 export const updateEventSchema = z.object({
@@ -62,7 +62,11 @@ export const resetUserPasswordSchema = z.object({
 export const createCompetitionSchema = competitionBaseSchema.extend({
   eventId: z.string().min(3, 'Event ID is required'),
   criteria: z.array(
-    z.object({ criteriaTitle: z.string(), percent: z.number().positive() }),
+    z.object({
+      criteriaTitle: z.string(),
+      percent: z.number().positive(),
+      score: z.number().positive(),
+    }),
   ),
   isActive: z.boolean(),
 })
