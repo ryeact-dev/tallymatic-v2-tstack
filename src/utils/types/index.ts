@@ -1,15 +1,27 @@
-import type { Candidate, Event, User } from '~/generated/prisma/client'
+import type React from 'react'
+import type {
+  Candidate,
+  Event,
+  Scoresheet,
+  User,
+} from '~/generated/prisma/client'
 
 export interface QueryParams {
   filter: string
   page: number
   limit: number
   eventId?: string
+  competitionId?: string
 }
 
 // Add this type to match the omitted fields
 // export type SafeUser = Omit<User, 'email' | 'createdAt' | 'password'>;
 export type CandidateNoCreatedAt = Omit<Candidate, 'createdAt'>
+
+export interface CandidatesWithScoresheet extends Candidate {
+  scoresheet: Array<Scoresheet>
+  event: UserEvent
+}
 
 export interface CompetitionLink {
   id: string
@@ -30,9 +42,17 @@ export interface UserCompetition {
   criteria: Array<CriteriaItem>
 }
 
+export interface SingleCandidateWithScoresheet {
+  userId: string
+  candidate: Candidate
+  candidateScoresheet: Scoresheet | null
+  competition: UserCompetition
+}
+
 export interface CriteriaItem {
   criteriaTitle: string
   percent: number
+  score: number
 }
 
 interface UserEvent {
@@ -66,6 +86,7 @@ export interface DefaultDataModalObject {
   password?: string
   username?: string
 }
+
 export type ModalData =
   | { type: 'delete-event'; data: DefaultDataModalObject }
   | { type: 'delete-user'; data: DefaultDataModalObject }
@@ -77,6 +98,7 @@ export type ModalData =
   | { type: 'user'; data: UserWithEventAndCompetitions | null }
   | { type: 'competition'; data: UserCompetition | null }
   | { type: 'candidate'; data: CandidateNoCreatedAt | null }
+  | { type: 'scoresheet'; data: SingleCandidateWithScoresheet }
   | { type: string; data: Record<string, unknown> }
 
 export type ModalSize =
@@ -94,7 +116,7 @@ export type ModalSize =
 export interface ModalProps {
   isModalOpen?: boolean
   isSheetOpen?: boolean
-  title?: string
+  title?: React.ReactNode
   size: ModalSize
   data: ModalData
 }
