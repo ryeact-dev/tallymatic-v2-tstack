@@ -48,6 +48,37 @@ export async function getEventCompetitionsDb({
   }
 }
 
+export async function getSingleCompetitionDb(competitionId: string) {
+  try {
+    const competition = await prisma.competition.findFirst({
+      where: {
+        id: competitionId,
+      },
+      // include: {
+      // scoresheet: true,
+      // event: true,
+      // },
+    })
+
+    // Need to serialize the competitions array to JSON string before returning
+    const json = JSON.stringify(competition, replacer)
+
+    return {
+      success: true,
+      message: 'Competiton created successfully',
+      competition: json,
+    }
+  } catch (error) {
+    console.log(error)
+
+    return {
+      success: false,
+      message: 'Error fetching competition',
+      competition: null,
+    }
+  }
+}
+
 export async function createCompetitionDb(competition: UserCompetition) {
   try {
     const foundCompetition = await prisma.competition.findFirst({
