@@ -31,6 +31,12 @@ const DEFAULT_VALUES: CompetitionFormValues = {
   isFinalist: false,
 }
 
+const DEFAULT_CRITERIA: CriteriaItem = {
+  criteriaTitle: '',
+  percent: 0,
+  score: 0,
+}
+
 const routeApi = getRouteApi('/settings/competitions')
 
 export default function AddCompetitionSheetBody({
@@ -42,7 +48,7 @@ export default function AddCompetitionSheetBody({
   const [criteria, setCriteria] = useState<Array<CriteriaItem>>(
     compInfo && compInfo.criteria.length > 0
       ? (compInfo.criteria as unknown as Array<CriteriaItem>)
-      : [{ criteriaTitle: '', percent: 0 }],
+      : [DEFAULT_CRITERIA],
   )
 
   // Initialize react-hook-form with zod resolver
@@ -59,22 +65,19 @@ export default function AddCompetitionSheetBody({
 
   const handleRemoveCriteria = () => {
     if (criteria.length === 1) {
-      setCriteria([{ criteriaTitle: '', percent: 0 }])
+      setCriteria([DEFAULT_CRITERIA])
     } else {
       setCriteria((prevState) => prevState.slice(0, -1))
     }
   }
 
   const handleAddCriteria = () => {
-    setCriteria((prevState) => [
-      ...prevState,
-      { criteriaTitle: '', percent: 0 },
-    ])
+    setCriteria((prevState) => [...prevState, DEFAULT_CRITERIA])
   }
 
   const onResetForm = () => {
     reset()
-    setCriteria([{ criteriaTitle: '', percent: 0 }])
+    setCriteria([DEFAULT_CRITERIA])
   }
 
   const { mutate: createCompetitionMutate, isPending: isCreatingCompetition } =
