@@ -15,6 +15,7 @@ import {
   createCompetitionServerFn,
   deleteCompetitionServerFn,
   getAllCompetitionsServerFn,
+  getSingleCompetitionsServerFn,
   toggleCompetitionServerFn,
   updateCompetitionServerFn,
 } from '~/server/functions/competition.server.fn'
@@ -25,6 +26,14 @@ export const competitionQueries = {
     queryOptions<Array<UserCompetition>>({
       queryKey: [...competitionQueries.all, 'list', params],
       queryFn: () => getAllCompetitionsServerFn({ data: params }),
+      placeholderData: (previewData) => previewData,
+      retry: 0,
+    }),
+  single: (competitionId: string) =>
+    queryOptions<UserCompetition>({
+      queryKey: [...competitionQueries.all, 'single', competitionId],
+      queryFn: () =>
+        getSingleCompetitionsServerFn({ data: { id: competitionId } }),
       placeholderData: (previewData) => previewData,
       retry: 0,
     }),
