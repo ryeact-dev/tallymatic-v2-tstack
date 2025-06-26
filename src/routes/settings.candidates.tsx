@@ -95,11 +95,11 @@ function RouteComponent() {
   const hasSearchFilter = Boolean(filter)
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...(candidates || [])]
+    let filteredUsers = [...candidates]
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.fullName.toLowerCase().includes(filter.toLowerCase()),
+      filteredUsers = filteredUsers.filter((candidate) =>
+        candidate.fullName.toLowerCase().includes(filter.toLowerCase()),
       )
     }
 
@@ -282,7 +282,7 @@ function RouteComponent() {
         </div>
       </div>
     )
-  }, [filter, onSearchChange, candidates?.length, hasSearchFilter])
+  }, [filter, onSearchChange, candidates.length, hasSearchFilter])
 
   const bottomContent = useMemo(() => {
     return (
