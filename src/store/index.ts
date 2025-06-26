@@ -6,6 +6,7 @@ export const modalStore = new Store<ModalProps>({
   isModalOpen: false,
   size: 'md', // now correctly typed
   data: { type: '', data: {} },
+  title: '',
 })
 
 export function openModal(newState: ModalProps) {
@@ -15,6 +16,7 @@ export function openModal(newState: ModalProps) {
       isModalOpen: newState.isModalOpen,
       size: newState.size,
       data: newState.data,
+      title: newState.title,
     }
   })
 }
