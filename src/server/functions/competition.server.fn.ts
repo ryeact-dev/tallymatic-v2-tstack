@@ -4,6 +4,7 @@ import {
   createCompetitionDb,
   deleteCompetitionDb,
   getEventCompetitionsDb,
+  getSingleCompetitionDb,
   toggleCompetitionDb,
   updateCompetitionDb,
 } from '../db-access/competition.db.access'
@@ -12,6 +13,7 @@ import { authenticatedMiddleware } from '~/utils/middlewares'
 import {
   createCompetitionSchema,
   getAllCompetitionsSchema,
+  idBaseSchema,
   toggleCompetitionSchema,
 } from '~/zod/validator.schema'
 
@@ -28,6 +30,17 @@ export const getAllCompetitionsServerFn = createServerFn()
 
     // Parse the JSON string from server response into an array of objects
     return JSON.parse(res.competitions || '')
+  })
+
+export const getSingleCompetitionsServerFn = createServerFn()
+  .middleware([authenticatedMiddleware])
+  .validator(idBaseSchema)
+  .handler(async ({ data }) => {
+    const res = await getSingleCompetitionDb(data.id)
+
+    // Parse the JSON string from server response into an array of objects
+    return JSON.parse(res.competition || '')
+    // return res.competition
   })
 
 export const createCompetitionServerFn = createServerFn({ method: 'POST' })
