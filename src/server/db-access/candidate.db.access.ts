@@ -1,5 +1,5 @@
 import type { CandidateNoCreatedAt } from '~/utils/types'
-import type { DeleteBaseType } from '~/zod/validator.schema'
+import type { IdBaseType } from '~/zod/validator.schema'
 import { prisma } from '~/utils/prisma'
 import { replacer } from '~/helpers/server-helpers'
 
@@ -149,7 +149,7 @@ export async function updateCandidateDb(candidate: CandidateNoCreatedAt) {
   }
 }
 
-export async function deleteCandidateDb(data: DeleteBaseType) {
+export async function deleteCandidateDb(data: IdBaseType) {
   try {
     const deletedCandidate = await prisma.candidate.delete({
       where: {

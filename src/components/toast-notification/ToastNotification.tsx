@@ -1,9 +1,9 @@
-import { addToast } from '@heroui/toast';
+import { addToast } from '@heroui/toast'
 
 interface ToastNotificationProps {
-  title: string;
-  description: string;
-  color: string;
+  title: string
+  description: string
+  color: string
 }
 
 const allowedColors = [
@@ -14,23 +14,23 @@ const allowedColors = [
   'success',
   'warning',
   'danger',
-] as const;
+] as const
 
-type ToastColor = (typeof allowedColors)[number];
+type ToastColor = (typeof allowedColors)[number]
 
 export default function ToastNotification({
   title,
   description,
   color,
 }: ToastNotificationProps) {
-  const normalizedColor = color?.toLowerCase() as ToastColor | undefined;
+  const normalizedColor = color.toLowerCase() as ToastColor | undefined
   const safeColor = allowedColors.includes(normalizedColor as ToastColor)
     ? normalizedColor
-    : undefined;
+    : undefined
 
   return addToast({
-    title: title ?? 'Toast title',
-    description: description ?? 'Toast displayed successfully',
+    title: title,
+    description: description,
     color: safeColor,
-  });
+  })
 }

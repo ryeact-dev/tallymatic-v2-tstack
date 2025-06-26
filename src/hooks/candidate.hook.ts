@@ -6,12 +6,13 @@ import {
 
 import type {
   ApiResponse,
+  CandidatesWithScoresheet,
   ErrorWithDataResponse,
   QueryParams,
 } from '~/utils/types'
 import type { CandidateFormValues } from '~/zod/form.schema'
 import type { Candidate } from '~/generated/prisma/client'
-import type { DeleteBaseType } from '~/zod/validator.schema'
+import type { IdBaseType } from '~/zod/validator.schema'
 
 import ToastNotification from '~/components/toast-notification/ToastNotification'
 import {
@@ -24,7 +25,7 @@ import {
 export const candidateQueries = {
   all: ['candidates'] as const,
   list: (params: QueryParams) =>
-    queryOptions({
+    queryOptions<Array<CandidatesWithScoresheet> | []>({
       queryKey: [...candidateQueries.all, 'list', params],
       queryFn: () => getEventCandidatesServerFn({ data: params }),
       placeholderData: (previewData) => previewData,
@@ -123,7 +124,7 @@ export function updateCandidateMutation(
 export function useDeleteCandidateMutation(onClose: () => void) {
   const queryClient = useQueryClient()
 
-  return useMutation<ApiResponse, ErrorWithDataResponse, DeleteBaseType>({
+  return useMutation<ApiResponse, ErrorWithDataResponse, IdBaseType>({
     mutationFn: (data) => deleteCandidateServerFn({ data }),
 
     onError: ({ data }) => {
