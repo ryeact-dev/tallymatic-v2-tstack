@@ -9,8 +9,8 @@ import {
 import { authenticatedMiddleware } from '~/utils/middlewares'
 import {
   candidateValidationSchema,
-  deleteBaseSchema,
   getAllCompetitionsSchema,
+  idBaseSchema,
 } from '~/zod/validator.schema'
 import { candidateBaseSchema } from '~/zod/form.schema'
 
@@ -25,7 +25,7 @@ export const getEventCandidatesServerFn = createServerFn()
       eventId: data.eventId || '',
     })
 
-    return res.candidates
+    return JSON.parse(res.candidates || '')
   })
 
 export const createCandidateServerFn = createServerFn({ method: 'POST' })
@@ -44,7 +44,7 @@ export const updateCandidateServerFn = createServerFn({ method: 'POST' })
 
 export const deleteCandidateServerFn = createServerFn({ method: 'POST' })
   .middleware([authenticatedMiddleware])
-  .validator(deleteBaseSchema)
+  .validator(idBaseSchema)
   .handler(async ({ data }) => {
     return await deleteCandidateDb(data)
   })
