@@ -35,21 +35,33 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.ensureQueryData(authQueries.user())
-    const competitions = await context.queryClient.ensureQueryData(
-      competitionQueries.list({
-        filter: '',
-        page: 1,
-        limit: 20,
-        eventId: user?.event?.id || '',
-      }),
-    )
 
-    const competitionLinks = competitions.map((competition) => ({
-      id: competition.id,
-      name: competition.name,
-      number: competition.number,
-      isActive: competition.isActive,
-    }))
+    return { user }
+  },
+  loader: async ({ context }) => {
+    const { user } = context
+
+    let competitionLinks: Array<CompetitionLink> = []
+
+    if (user) {
+      const competitions = await context.queryClient.ensureQueryData(
+        competitionQueries.list({
+          filter: '',
+          page: 1,
+          limit: 20,
+          eventId: user.event?.id || '',
+        }),
+      )
+
+      competitionLinks = competitions
+        .map((competition) => ({
+          id: competition.id || '',
+          name: competition.name,
+          number: competition.number,
+          isActive: competition.isActive,
+        }))
+        .filter((competition) => competition.id)
+    }
 
     return { user, competitionLinks }
   },
@@ -104,6 +116,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootComponent() {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const { competitionLinks } = Route.useLoaderData()
   const { data: user } = useSuspenseQuery(authQueries.user())
 
   return (
@@ -114,6 +127,7 @@ function RootComponent() {
             user={user}
             isCollapsed={isCollapsed}
             setIsCollapsed={setIsCollapsed}
+            competitionLinks={competitionLinks}
           />
         )}
         {/* Main Content */}
@@ -123,6 +137,7 @@ function RootComponent() {
               user={user}
               setIsCollapsed={setIsCollapsed}
               isCollapsed={isCollapsed}
+              competitionLinks={competitionLinks}
             />
             <Outlet />
 
