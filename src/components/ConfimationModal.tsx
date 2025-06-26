@@ -5,13 +5,17 @@ import DeleteUserModalBody from './settings/users/delete-user/DeleteUserModalBod
 import DeleteCompetitionModalBody from './settings/competitions/delete-competition/DeleteCompetitionModalBody'
 import ResetPasswordModalBody from './settings/users/reset-password/ResetPasswordModalBody'
 import DeleteCandidateModalBody from './settings/candidate/delete-candidate/DeleteCandidateModalBody'
+import CandidateScoreSheetModal from './competitions/candidate-scoresheet-modal/CandidateScoreSheetModal'
 
-import type { DefaultDataModalObject } from '~/utils/types'
+import type {
+  DefaultDataModalObject,
+  SingleCandidateWithScoresheet,
+} from '~/utils/types'
 
 import { closeModal, modalStore } from '~/store'
 
 export default function ConfimationModal() {
-  const { isModalOpen, size, data } = useStore(modalStore)
+  const { isModalOpen, size, data, title } = useStore(modalStore)
 
   let body = <div />
 
@@ -61,6 +65,15 @@ export default function ConfimationModal() {
       )
       break
 
+    case 'scoresheet':
+      body = (
+        <CandidateScoreSheetModal
+          data={data.data as SingleCandidateWithScoresheet}
+          onClose={closeModal}
+        />
+      )
+      break
+
     default:
       body
   }
@@ -74,7 +87,9 @@ export default function ConfimationModal() {
       onClose={closeModal}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Confirmation</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">
+          {title ? title : 'Confirmation'}
+        </ModalHeader>
         {body}
       </ModalContent>
     </Modal>

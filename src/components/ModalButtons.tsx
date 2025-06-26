@@ -11,7 +11,7 @@ export default function ModalButtons({
   onConfirm: () => void
 }) {
   return (
-    <>
+    <div className="flex gap-4 justify-end">
       <Button
         color="danger"
         variant="light"
@@ -37,6 +37,6 @@ export default function ModalButtons({
           </>
         )}
       </Button>
-    </>
+    </div>
   )
 }
