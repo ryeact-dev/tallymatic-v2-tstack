@@ -65,7 +65,7 @@ export const createCompetitionSchema = competitionBaseSchema.extend({
     z.object({
       criteriaTitle: z.string(),
       percent: z.number().positive(),
-      score: z.number().positive(),
+      score: z.number(),
     }),
   ),
   isActive: z.boolean(),
@@ -86,3 +86,21 @@ export const getAllCompetitionsSchema = baseValidationSchema.extend({
 export const candidateValidationSchema = candidateBaseSchema.extend({
   id: z.string().min(1, 'Candidate ID is required'),
 })
+
+// Scoresheet Validation Schema
+export const scoresheetValidationSchema = z.object({
+  id: z.string().optional(),
+  scores: z.array(
+    z.object({
+      score: z.number(),
+      criteriaTitle: z.string(),
+      percent: z.number().positive(),
+    }),
+  ),
+  userId: z.string().min(1, 'User ID is required'),
+  candidateId: z.string().min(1, 'Candidate ID is required'),
+  competitionId: z.string().min(1, 'Competition ID is required'),
+  total: z.number().positive(),
+})
+
+export type ScoresheetFormValues = z.infer<typeof scoresheetValidationSchema>
