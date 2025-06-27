@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { Button } from '@heroui/react'
 import { useEffect } from 'react'
 import { PanelLeftIcon } from 'lucide-react'
-import type { CompetitionLink, CurrentUser } from '~/utils/types'
+import type { CurrentUser, UserCompetition } from '~/utils/types'
 
 export default function Header({
   user,
@@ -13,7 +13,7 @@ export default function Header({
   user: CurrentUser | null
   setIsCollapsed: (isCollapsed: boolean) => void
   isCollapsed: boolean
-  competitionLinks: Array<CompetitionLink> | []
+  competitionLinks: Array<UserCompetition> | []
 }) {
   const navigate = useNavigate()
   const pathname = useLocation({
@@ -32,12 +32,20 @@ export default function Header({
 
     if (pathname.includes('login')) {
       if (user.role === 'judge') {
-        navigate({
-          to: '/competitions',
-          search: { filter: activeCompetitionId || '' },
-          replace: true,
-        })
-        return
+        if (activeCompetitionId) {
+          navigate({
+            to: '/competitions',
+            search: { filter: activeCompetitionId },
+            replace: true,
+          })
+          return
+        } else {
+          navigate({
+            to: '/waiting-page',
+            replace: true,
+          })
+          return
+        }
       }
 
       navigate({ to: '/', replace: true })

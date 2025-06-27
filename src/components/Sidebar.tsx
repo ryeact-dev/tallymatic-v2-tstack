@@ -1,6 +1,6 @@
 import SidebarLinks from './sidebar/sidebar-links/SidebarLinks'
 import SidebarAvatar from './sidebar/sidebar-avatar/SidebarAvatar'
-import type { CompetitionLink, CurrentUser } from '~/utils/types'
+import type { CurrentUser, UserCompetition } from '~/utils/types'
 import { cn } from '~/utils/cn'
 
 interface SidebarProps {
@@ -39,7 +39,7 @@ export default function Sidebar({
   user: CurrentUser
   isCollapsed: boolean
   setIsCollapsed: (collapsed: boolean) => void
-  competitionLinks: Array<CompetitionLink> | []
+  competitionLinks: Array<UserCompetition> | []
 }) {
   return (
     <SidebarWrapper isCollapsed={isCollapsed} onCollapse={setIsCollapsed}>
