@@ -9,6 +9,8 @@ import {
 } from 'lucide-react'
 import type { CompetitionLink, CurrentUser } from '~/utils/types'
 
+const ACTIVE_LINK_CLASS = 'text-red-700 font-medium'
+
 export default function SidebarLinks({
   user,
   competitionLinks,
@@ -24,6 +26,7 @@ export default function SidebarLinks({
           to="/"
           // search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+          activeProps={{ className: ACTIVE_LINK_CLASS }}
         >
           <HomeIcon size={18} />
           <span>Home Page</span>
@@ -40,6 +43,7 @@ export default function SidebarLinks({
               to="/competitions"
               search={{ filter: competitionLink.id }}
               className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+              activeProps={{ className: ACTIVE_LINK_CLASS }}
             >
               <CircleChevronRightIcon size={18} />
               <span>{competitionLink.name}</span>
@@ -55,6 +59,7 @@ export default function SidebarLinks({
           to="/settings/candidates"
           search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+          activeProps={{ className: ACTIVE_LINK_CLASS }}
         >
           <Users2Icon size={18} />
           <span>Candidates</span>
@@ -68,6 +73,7 @@ export default function SidebarLinks({
           to="/settings/candidates"
           search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+          activeProps={{ className: ACTIVE_LINK_CLASS }}
         >
           <Users2Icon size={18} />
           <span>Candidates</span>
@@ -77,6 +83,7 @@ export default function SidebarLinks({
           to="/settings/competitions"
           search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+          activeProps={{ className: ACTIVE_LINK_CLASS }}
         >
           <ClapperboardIcon size={18} />
           <span>Competitions</span>
@@ -87,6 +94,7 @@ export default function SidebarLinks({
             to="/settings/events"
             search={{ filter: '', page: 1, sort: 'a-z', limit: 10 }}
             className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+            activeProps={{ className: ACTIVE_LINK_CLASS }}
           >
             <CalendarCogIcon size={18} />
             <span>Events</span>
@@ -103,6 +111,7 @@ export default function SidebarLinks({
             limit: 10,
           }}
           className={`flex items-center gap-2 p-2 text-md rounded-lg hover:bg-default-100`}
+          activeProps={{ className: ACTIVE_LINK_CLASS }}
         >
           <UserIcon size={18} />
           <span>Users</span>
