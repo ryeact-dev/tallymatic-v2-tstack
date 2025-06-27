@@ -49,7 +49,7 @@ model Competition {
   createdAt       DateTime     @default(now())
   eventId         String       @default("")
   criteria        Json[]
-  multiplier      Decimal      @default(0) @db.Decimal(3, 1)
+  multiplier      Decimal      @default(0) @db.Decimal(5, 2)
   isActive        Boolean      @default(false)
   isFinalist      Boolean      @default(false)
   finalistList    String[]
@@ -68,7 +68,7 @@ model Scoresheet {
   candidateId   String
   userId        String
   scores        Json[]
-  total         Decimal     @default(0) @db.Decimal(3, 1)
+  total         Decimal     @default(0) @db.Decimal(5, 2)
   rank          Int         @default(0)
   candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
