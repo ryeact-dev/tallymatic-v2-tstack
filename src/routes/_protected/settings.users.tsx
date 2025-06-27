@@ -13,7 +13,7 @@ import { debounce } from '~/utils/debounce'
 
 type userTabOptions = 'judges' | 'managers'
 
-export const Route = createFileRoute('/settings/users')({
+export const Route = createFileRoute('/_protected/settings/users')({
   validateSearch: (search) => userSearchSchema.parse(search),
   loaderDeps: ({ search: { page, filter } }) => ({ page, filter }),
   loader: async ({ context, deps: { filter, page } }) => {

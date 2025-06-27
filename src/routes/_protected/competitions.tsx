@@ -1,58 +1,36 @@
-import { createFileRoute, redirect, useSearch } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import type {
-  CandidatesWithScoresheet,
-  SingleCandidateWithScoresheet,
-} from '~/utils/types'
+import type { SingleCandidateWithScoresheet } from '~/utils/types'
 
-import { candidateQueries } from '~/hooks/candidate.hook'
-import { competitionQueries } from '~/hooks/competition.hook'
-import { competitionSearchSchema } from '~/zod/search.schema'
 import CandidatesCards from '~/components/competitions/candidates-cards/CandidatesCards'
+import { candidateQueries } from '~/hooks/candidate.hook'
 import { openModal } from '~/store'
+import { competitionSearchSchema } from '~/zod/search.schema'
 
-export const Route = createFileRoute('/competitions')({
+export const Route = createFileRoute('/_protected/competitions')({
   validateSearch: (search) => competitionSearchSchema.parse(search),
-  beforeLoad: ({ context }) => {
-    const { user } = context
-
-    if (!user) {
-      throw redirect({ to: '/login', replace: true })
-    }
-
-    return { user }
-  },
   loaderDeps: ({ search: { filter } }) => ({ filter }),
   loader: async ({ context, deps: { filter } }) => {
-    let candidates: Array<CandidatesWithScoresheet> = []
-
-    const activeCompetitionPromise = context.queryClient.ensureQueryData(
-      competitionQueries.single(filter),
+    const selectedCompetition = context.competitionLinks.find(
+      (competition) => competition.id === filter,
     )
 
-    const candidatesPromise = context.queryClient.ensureQueryData(
+    await context.queryClient.ensureQueryData(
       candidateQueries.list({
         page: 1,
         limit: 30,
         filter: '',
-        eventId: context.user.event?.id || '',
+        eventId: context.user?.event?.id || '',
         competitionId: filter,
       }),
     )
 
-    const [activeCompetition, candidateList] = await Promise.all([
-      activeCompetitionPromise,
-      candidatesPromise,
-    ])
-
-    candidates = candidateList
-
-    if (!activeCompetition.isActive && context.user.role === 'judge') {
-      throw redirect({ to: '/waiting-page', replace: true })
+    if (!selectedCompetition) {
+      throw redirect({ to: '..' })
     }
 
-    return { activeCompetition }
+    return { activeCompetition: selectedCompetition }
   },
   head: () => ({
     meta: [{ title: 'Tallymatic | Competitions' }],
@@ -61,7 +39,6 @@ export const Route = createFileRoute('/competitions')({
 })
 
 function RouteComponent() {
-  const { filter } = Route.useSearch()
   const { user } = Route.useRouteContext()
   const { activeCompetition } = Route.useLoaderData()
 
@@ -70,8 +47,8 @@ function RouteComponent() {
       page: 1,
       limit: 30,
       filter: '',
-      eventId: activeCompetition.eventId || '',
-      competitionId: activeCompetition.id || '',
+      eventId: user.event?.id,
+      competitionId: activeCompetition?.id ?? '',
     }),
   )
 
@@ -97,11 +74,11 @@ function RouteComponent() {
     <div>
       {/* Header */}
       <div className="flex flex-col items-center mb-6">
-        <h2 className="text-3xl font-bold text-primary-700">
-          {activeCompetition.name}
+        <h2 className="text-3xl font-bold text-primary-600">
+          {activeCompetition?.name}
         </h2>
         <h4 className="text-base font-semibold text-gray-700">
-          {activeCompetition.isFinalist
+          {activeCompetition?.isFinalist
             ? 'Major Competition'
             : 'Minor Competition'}
         </h4>

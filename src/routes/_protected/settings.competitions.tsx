@@ -32,7 +32,7 @@ export const statusOptions = [
   { name: 'Vacation', uid: 'vacation' },
 ]
 
-export const Route = createFileRoute('/settings/competitions')({
+export const Route = createFileRoute('/_protected/settings/competitions')({
   validateSearch: (search) => searchSchema.parse(search),
   loaderDeps: ({ search: { page, filter } }) => ({ page, filter }),
   loader: async ({ context, deps: { filter, page } }) => {

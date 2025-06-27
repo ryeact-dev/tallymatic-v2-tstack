@@ -14,12 +14,14 @@ import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as UnauthenticatedRouteImport } from './routes/unauthenticated'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DeferredRouteImport } from './routes/deferred'
-import { Route as CompetitionsRouteImport } from './routes/competitions'
+import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SettingsUsersRouteImport } from './routes/settings.users'
-import { Route as SettingsEventsRouteImport } from './routes/settings.events'
-import { Route as SettingsCompetitionsRouteImport } from './routes/settings.competitions'
-import { Route as SettingsCandidatesRouteImport } from './routes/settings.candidates'
+import { Route as ProtectedCompetitionsRouteImport } from './routes/_protected/competitions'
+import { Route as ProtectedSettingsUsersRouteImport } from './routes/_protected/settings.users'
+import { Route as ProtectedSettingsEventsRouteImport } from './routes/_protected/settings.events'
+import { Route as ProtectedSettingsCompetitionsRouteImport } from './routes/_protected/settings.competitions'
+import { Route as ProtectedSettingsCandidatesRouteImport } from './routes/_protected/settings.candidates'
+import { Route as ProtectedResultsJudgeRouteImport } from './routes/_protected/results.judge'
 
 const WaitingPageRoute = WaitingPageRouteImport.update({
   id: '/waiting-page',
@@ -46,9 +48,8 @@ const DeferredRoute = DeferredRouteImport.update({
   path: '/deferred',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CompetitionsRoute = CompetitionsRouteImport.update({
-  id: '/competitions',
-  path: '/competitions',
+const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
+  id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -56,77 +57,94 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsUsersRoute = SettingsUsersRouteImport.update({
+const ProtectedCompetitionsRoute = ProtectedCompetitionsRouteImport.update({
+  id: '/competitions',
+  path: '/competitions',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedSettingsUsersRoute = ProtectedSettingsUsersRouteImport.update({
   id: '/settings/users',
   path: '/settings/users',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const SettingsEventsRoute = SettingsEventsRouteImport.update({
+const ProtectedSettingsEventsRoute = ProtectedSettingsEventsRouteImport.update({
   id: '/settings/events',
   path: '/settings/events',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const SettingsCompetitionsRoute = SettingsCompetitionsRouteImport.update({
-  id: '/settings/competitions',
-  path: '/settings/competitions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsCandidatesRoute = SettingsCandidatesRouteImport.update({
-  id: '/settings/candidates',
-  path: '/settings/candidates',
-  getParentRoute: () => rootRouteImport,
+const ProtectedSettingsCompetitionsRoute =
+  ProtectedSettingsCompetitionsRouteImport.update({
+    id: '/settings/competitions',
+    path: '/settings/competitions',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedSettingsCandidatesRoute =
+  ProtectedSettingsCandidatesRouteImport.update({
+    id: '/settings/candidates',
+    path: '/settings/candidates',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedResultsJudgeRoute = ProtectedResultsJudgeRouteImport.update({
+  id: '/results/judge',
+  path: '/results/judge',
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/competitions': typeof CompetitionsRoute
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/waiting-page': typeof WaitingPageRoute
-  '/settings/candidates': typeof SettingsCandidatesRoute
-  '/settings/competitions': typeof SettingsCompetitionsRoute
-  '/settings/events': typeof SettingsEventsRoute
-  '/settings/users': typeof SettingsUsersRoute
+  '/competitions': typeof ProtectedCompetitionsRoute
+  '/results/judge': typeof ProtectedResultsJudgeRoute
+  '/settings/candidates': typeof ProtectedSettingsCandidatesRoute
+  '/settings/competitions': typeof ProtectedSettingsCompetitionsRoute
+  '/settings/events': typeof ProtectedSettingsEventsRoute
+  '/settings/users': typeof ProtectedSettingsUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/competitions': typeof CompetitionsRoute
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/waiting-page': typeof WaitingPageRoute
-  '/settings/candidates': typeof SettingsCandidatesRoute
-  '/settings/competitions': typeof SettingsCompetitionsRoute
-  '/settings/events': typeof SettingsEventsRoute
-  '/settings/users': typeof SettingsUsersRoute
+  '/competitions': typeof ProtectedCompetitionsRoute
+  '/results/judge': typeof ProtectedResultsJudgeRoute
+  '/settings/candidates': typeof ProtectedSettingsCandidatesRoute
+  '/settings/competitions': typeof ProtectedSettingsCompetitionsRoute
+  '/settings/events': typeof ProtectedSettingsEventsRoute
+  '/settings/users': typeof ProtectedSettingsUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/competitions': typeof CompetitionsRoute
+  '/_protected': typeof ProtectedRouteRouteWithChildren
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/unauthenticated': typeof UnauthenticatedRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/waiting-page': typeof WaitingPageRoute
-  '/settings/candidates': typeof SettingsCandidatesRoute
-  '/settings/competitions': typeof SettingsCompetitionsRoute
-  '/settings/events': typeof SettingsEventsRoute
-  '/settings/users': typeof SettingsUsersRoute
+  '/_protected/competitions': typeof ProtectedCompetitionsRoute
+  '/_protected/results/judge': typeof ProtectedResultsJudgeRoute
+  '/_protected/settings/candidates': typeof ProtectedSettingsCandidatesRoute
+  '/_protected/settings/competitions': typeof ProtectedSettingsCompetitionsRoute
+  '/_protected/settings/events': typeof ProtectedSettingsEventsRoute
+  '/_protected/settings/users': typeof ProtectedSettingsUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/competitions'
     | '/deferred'
     | '/login'
     | '/unauthenticated'
     | '/unauthorized'
     | '/waiting-page'
+    | '/competitions'
+    | '/results/judge'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
@@ -134,12 +152,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/competitions'
     | '/deferred'
     | '/login'
     | '/unauthenticated'
     | '/unauthorized'
     | '/waiting-page'
+    | '/competitions'
+    | '/results/judge'
     | '/settings/candidates'
     | '/settings/competitions'
     | '/settings/events'
@@ -147,30 +166,28 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/competitions'
+    | '/_protected'
     | '/deferred'
     | '/login'
     | '/unauthenticated'
     | '/unauthorized'
     | '/waiting-page'
-    | '/settings/candidates'
-    | '/settings/competitions'
-    | '/settings/events'
-    | '/settings/users'
+    | '/_protected/competitions'
+    | '/_protected/results/judge'
+    | '/_protected/settings/candidates'
+    | '/_protected/settings/competitions'
+    | '/_protected/settings/events'
+    | '/_protected/settings/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CompetitionsRoute: typeof CompetitionsRoute
+  ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
   DeferredRoute: typeof DeferredRoute
   LoginRoute: typeof LoginRoute
   UnauthenticatedRoute: typeof UnauthenticatedRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   WaitingPageRoute: typeof WaitingPageRoute
-  SettingsCandidatesRoute: typeof SettingsCandidatesRoute
-  SettingsCompetitionsRoute: typeof SettingsCompetitionsRoute
-  SettingsEventsRoute: typeof SettingsEventsRoute
-  SettingsUsersRoute: typeof SettingsUsersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -210,11 +227,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeferredRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/competitions': {
-      id: '/competitions'
-      path: '/competitions'
-      fullPath: '/competitions'
-      preLoaderRoute: typeof CompetitionsRouteImport
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ProtectedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -224,49 +241,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/users': {
-      id: '/settings/users'
+    '/_protected/competitions': {
+      id: '/_protected/competitions'
+      path: '/competitions'
+      fullPath: '/competitions'
+      preLoaderRoute: typeof ProtectedCompetitionsRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/settings/users': {
+      id: '/_protected/settings/users'
       path: '/settings/users'
       fullPath: '/settings/users'
-      preLoaderRoute: typeof SettingsUsersRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedSettingsUsersRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
-    '/settings/events': {
-      id: '/settings/events'
+    '/_protected/settings/events': {
+      id: '/_protected/settings/events'
       path: '/settings/events'
       fullPath: '/settings/events'
-      preLoaderRoute: typeof SettingsEventsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedSettingsEventsRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
-    '/settings/competitions': {
-      id: '/settings/competitions'
+    '/_protected/settings/competitions': {
+      id: '/_protected/settings/competitions'
       path: '/settings/competitions'
       fullPath: '/settings/competitions'
-      preLoaderRoute: typeof SettingsCompetitionsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedSettingsCompetitionsRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
-    '/settings/candidates': {
-      id: '/settings/candidates'
+    '/_protected/settings/candidates': {
+      id: '/_protected/settings/candidates'
       path: '/settings/candidates'
       fullPath: '/settings/candidates'
-      preLoaderRoute: typeof SettingsCandidatesRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedSettingsCandidatesRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/results/judge': {
+      id: '/_protected/results/judge'
+      path: '/results/judge'
+      fullPath: '/results/judge'
+      preLoaderRoute: typeof ProtectedResultsJudgeRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
   }
 }
 
+interface ProtectedRouteRouteChildren {
+  ProtectedCompetitionsRoute: typeof ProtectedCompetitionsRoute
+  ProtectedResultsJudgeRoute: typeof ProtectedResultsJudgeRoute
+  ProtectedSettingsCandidatesRoute: typeof ProtectedSettingsCandidatesRoute
+  ProtectedSettingsCompetitionsRoute: typeof ProtectedSettingsCompetitionsRoute
+  ProtectedSettingsEventsRoute: typeof ProtectedSettingsEventsRoute
+  ProtectedSettingsUsersRoute: typeof ProtectedSettingsUsersRoute
+}
+
+const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
+  ProtectedCompetitionsRoute: ProtectedCompetitionsRoute,
+  ProtectedResultsJudgeRoute: ProtectedResultsJudgeRoute,
+  ProtectedSettingsCandidatesRoute: ProtectedSettingsCandidatesRoute,
+  ProtectedSettingsCompetitionsRoute: ProtectedSettingsCompetitionsRoute,
+  ProtectedSettingsEventsRoute: ProtectedSettingsEventsRoute,
+  ProtectedSettingsUsersRoute: ProtectedSettingsUsersRoute,
+}
+
+const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
+  ProtectedRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CompetitionsRoute: CompetitionsRoute,
+  ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
   DeferredRoute: DeferredRoute,
   LoginRoute: LoginRoute,
   UnauthenticatedRoute: UnauthenticatedRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   WaitingPageRoute: WaitingPageRoute,
-  SettingsCandidatesRoute: SettingsCandidatesRoute,
-  SettingsCompetitionsRoute: SettingsCompetitionsRoute,
-  SettingsEventsRoute: SettingsEventsRoute,
-  SettingsUsersRoute: SettingsUsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

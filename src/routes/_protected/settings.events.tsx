@@ -42,7 +42,7 @@ const statusColorMap: Record<string, ChipProps['color']> = {
   false: 'danger',
 }
 
-export const Route = createFileRoute('/settings/events')({
+export const Route = createFileRoute('/_protected/settings/events')({
   validateSearch: (search) => searchSchema.parse(search),
   loaderDeps: ({ search: { page, filter } }) => ({ page, filter }),
   loader: async ({ context, deps: { filter, page } }) => {
