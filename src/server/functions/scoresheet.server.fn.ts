@@ -1,26 +1,10 @@
-// import { createServerFn } from '@tanstack/react-start';
-// import { z } from 'zod';
-// import {
-//   createEventDb,
-//   deleteEventDb,
-//   getAllEventsDb,
-//   updateEventDb,
-// } from '~/server/db-access/event.db.access';
-// import { competitionSchema, eventSchema } from '~/zod/form.schema';
-// import { adminMiddleware, authenticatedMiddleware } from '~/utils/middlewares';
-// import {
-//   createCompetitionSchema,
-//   updateEventSchema,
-//   getAllCompetitionsSchema,
-//   toggleCompetitionSchema,
-// } from '~/zod/validator.schema';
-// import {
-//   createCompetitionDb,
-//   deleteCompetitionDb,
-//   getAllCompetitionsDb,
-//   toggleCompetitionDb,
-//   updateCompetitionDb,
-// } from '../db-access/competition.db.access';
+import { createServerFn } from '@tanstack/react-start'
+import {
+  createCandidateScoresDb,
+  updateCandidateScoresDb,
+} from '../db-access/scoresheet.db.access'
+import { authenticatedMiddleware } from '~/utils/middlewares'
+import { scoresheetValidationSchema } from '~/zod/validator.schema'
 
 // export const getAllCompetitionsServerFn = createServerFn()
 //   .middleware([authenticatedMiddleware])
@@ -34,12 +18,35 @@
 //     });
 //   });
 
-// export const createCompetitionServerFn = createServerFn({ method: 'POST' })
-//   .middleware([authenticatedMiddleware])
-//   .validator(createCompetitionSchema)
-//   .handler(async ({ data }) => {
-//     return await createCompetitionDb(data);
-//   });
+export const createCandidateScoresServerFn = createServerFn({ method: 'POST' })
+  .middleware([authenticatedMiddleware])
+  .validator(scoresheetValidationSchema)
+  .handler(async ({ context, data }) => {
+    // if (context.user.role !== 'judge') {
+    //   return {
+    //     success: false,
+    //     message: 'You are not authorized to score a candidate',
+    //   }
+    // }
+
+    const { id, ...rest } = data
+
+    return await createCandidateScoresDb(rest)
+  })
+
+export const updateCandidateScoresServerFn = createServerFn({ method: 'POST' })
+  .middleware([authenticatedMiddleware])
+  .validator(scoresheetValidationSchema)
+  .handler(async ({ context, data }) => {
+    // if (context.user.role !== 'judge') {
+    //   return {
+    //     success: false,
+    //     message: 'You are not authorized to score a candidate',
+    //   }
+    // }
+
+    return await updateCandidateScoresDb(data)
+  })
 
 // export const updateCompetitionServerFn = createServerFn({ method: 'POST' })
 //   .middleware([authenticatedMiddleware])
