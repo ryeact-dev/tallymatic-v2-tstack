@@ -8,7 +8,7 @@ export default function ModalButtons({
 }: {
   onClose: () => void
   isLoading: boolean
-  onConfirm: () => void
+  onConfirm?: () => void
 }) {
   return (
     <div className="flex gap-4 justify-end">
