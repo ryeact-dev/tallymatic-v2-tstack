@@ -1,8 +1,13 @@
 import { useState } from 'react'
 import ScoresheetForm from './ScoresheetForm'
+import ScoresheetPhoto from './ScoresheetPhoto'
 
 import type { CriteriaItem, SingleCandidateWithScoresheet } from '~/utils/types'
-import ScoresheetPhoto from './ScoresheetPhoto'
+import {
+  useCreateCandidateScoresMutation,
+  useUpdateCandidateScoresMutation,
+} from '~/hooks/scoresheet.hook'
+import ToastNotification from '~/components/toast-notification/ToastNotification'
 
 export default function CandidateScoreSheetModal({
   data,
@@ -64,8 +69,27 @@ export default function CandidateScoreSheetModal({
     })
   }
 
+  const {
+    mutate: createCandidateScoreMutate,
+    isPending: isCreatingScoresheet,
+  } = useCreateCandidateScoresMutation(onClose)
+
+  const {
+    mutate: updateCandidateScoreMutate,
+    isPending: isUpdatingScoresheet,
+  } = useUpdateCandidateScoresMutation(onClose)
+
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
+
+    if (!competition.id) {
+      ToastNotification({
+        color: 'Danger',
+        title: 'Adding Scoresheet',
+        description: 'No competition id',
+      })
+      return
+    }
 
     let scoresheetObj = {
       scores: scoresheet,
@@ -73,14 +97,16 @@ export default function CandidateScoreSheetModal({
       candidateId: candidate.id,
       competitionId: competition.id,
       total: Number(totalScore),
+      id: '',
     }
 
-    // if (candidateScoresheet) {
-    //   scoresheetObj = { ...scoresheetObj, id: candidateScoresheet.id };
-    //   addCandidateScoreMutation({ scoresheetObj, isNew: false });
-    // } else {
-    //   addCandidateScoreMutation({ scoresheetObj, isNew: true });
-    // }
+    if (candidateScoresheet) {
+      scoresheetObj = { ...scoresheetObj, id: candidateScoresheet.id }
+      updateCandidateScoreMutate(scoresheetObj)
+      console.log('update')
+    } else {
+      createCandidateScoreMutate(scoresheetObj)
+    }
   }
 
   return (
@@ -91,7 +117,7 @@ export default function CandidateScoreSheetModal({
         scoresheet={scoresheet}
         handleRangeChange={handleRangeChange}
         handleInputChange={handleInputChange}
-        loadingMutation={false}
+        isLoading={isCreatingScoresheet || isUpdatingScoresheet}
       />
     </form>
   )

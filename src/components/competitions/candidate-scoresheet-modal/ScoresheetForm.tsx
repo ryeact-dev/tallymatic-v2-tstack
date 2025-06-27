@@ -63,7 +63,7 @@ export default function ScoresheetForm({
           </div>
         ))}
       </div>
-      <ModalButtons />
+      <ModalButtons isLoading={isLoading} onClose={closeModal} />
     </div>
   )
 }

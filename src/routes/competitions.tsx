@@ -1,4 +1,5 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, useSearch } from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 import type {
   CandidatesWithScoresheet,
@@ -51,7 +52,7 @@ export const Route = createFileRoute('/competitions')({
       throw redirect({ to: '/waiting-page', replace: true })
     }
 
-    return { activeCompetition, candidates }
+    return { activeCompetition }
   },
   head: () => ({
     meta: [{ title: 'Tallymatic | Competitions' }],
@@ -59,33 +60,44 @@ export const Route = createFileRoute('/competitions')({
   component: RouteComponent,
 })
 
-const onAddScoreHandler = (data: SingleCandidateWithScoresheet) => {
-  if (!data.candidate.id) return
-
-  openModal({
-    data: {
-      type: 'scoresheet',
-      data,
-    },
-    isModalOpen: true,
-    size: '3xl',
-    title: (
-      <p className="text-2xl font-bold">
-        Scoresheet - Candidate No.: {data.candidate.number}
-      </p>
-    ),
-  })
-}
-
 function RouteComponent() {
+  const { filter } = Route.useSearch()
   const { user } = Route.useRouteContext()
-  const { activeCompetition, candidates } = Route.useLoaderData()
+  const { activeCompetition } = Route.useLoaderData()
+
+  const { data: candidates } = useSuspenseQuery(
+    candidateQueries.list({
+      page: 1,
+      limit: 30,
+      filter: '',
+      eventId: activeCompetition.eventId || '',
+      competitionId: activeCompetition.id || '',
+    }),
+  )
+
+  const onAddScoreHandler = (data: SingleCandidateWithScoresheet) => {
+    if (!data.candidate.id) return
+
+    openModal({
+      data: {
+        type: 'scoresheet',
+        data,
+      },
+      isModalOpen: true,
+      size: '3xl',
+      title: (
+        <p className="text-2xl font-bold">
+          Scoresheet - Candidate No.: {data.candidate.number}
+        </p>
+      ),
+    })
+  }
 
   return (
     <div>
       {/* Header */}
       <div className="flex flex-col items-center mb-6">
-        <h2 className="text-3xl font-bold text-accent">
+        <h2 className="text-3xl font-bold text-primary-700">
           {activeCompetition.name}
         </h2>
         <h4 className="text-base font-semibold text-gray-700">

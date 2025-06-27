@@ -46,7 +46,7 @@ export default function CandidatesCards({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.4, delay: index * 0.05 }}
-          key={Math.random()}
+          key={`${competition.id}-${index}`}
         >
           <Card
             className="sm:h-[24rem] sm:w-[18rem] group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white/90 backdrop-blur-sm border border-slate-200 shadow-lg overflow-hidden"
@@ -70,7 +70,8 @@ export default function CandidatesCards({
                   })
                 }
               >
-                {/* <div className={'w-full h-full overflow-hidden'}> */}
+                {/* <div className="absolute bottom-0 left-0 h-[10rem] w-full bg-gradient-to-t from-red-700 to-bg-secondary/10 z-10" /> */}
+
                 <img
                   src={candidate.photo || ''}
                   className="w-full h-full object-cover object-center"
@@ -90,7 +91,7 @@ export default function CandidatesCards({
                 //   )
                 // }
               >
-                <div className="flex size-12 items-center justify-center rounded-md border-2 border-accent bg-accent/90 p-1 backdrop-blur-sm">
+                <div className="flex size-12 items-center justify-center rounded-md border-2 border-secondary bg-secondary/90 p-1 backdrop-blur-sm">
                   <p className=" text-2xl font-semibold text-white">
                     {candidate.number < 10 && '0'}
                     {candidate.number}
@@ -104,8 +105,8 @@ export default function CandidatesCards({
                         candidate.scoresheet,
                       ).totalScore,
                     ) > 0
-                      ? 'border-accent bg-accent/90'
-                      : 'border-primary bg-primary/85'
+                      ? 'border-secondary bg-secondary/75'
+                      : 'border-primary bg-primary/80'
                   }`}
                 >
                   <p className="-mt-1 font-[Inconsolata] text-3xl font-semibold uppercase text-white">

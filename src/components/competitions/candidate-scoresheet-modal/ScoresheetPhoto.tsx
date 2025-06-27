@@ -12,8 +12,8 @@ export default function ScoresheetPhoto({
 }: ScoresheetPhotoProps) {
   return (
     <div className="relative size-auto max-h-80 w-[35%] items-center rounded-2xl shadow-lg">
-      <div className="absolute bottom-1 right-1 flex w-28 items-center justify-center rounded-md border-2 border-accent bg-accent/90 p-1 backdrop-blur-xl">
-        <p className="text-3xl font-semibold text-white">
+      <div className="absolute bottom-1 right-1 flex w-28 items-center justify-center rounded-md border-2 border-secondary bg-secondary/80 p-1 backdrop-blur-xl">
+        <p className="text-3xl font-semibold text-white tracking-widest">
           {totalScore === 0 ? '0' : totalScore}
         </p>
       </div>
