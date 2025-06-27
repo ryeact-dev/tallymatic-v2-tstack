@@ -5,6 +5,7 @@ import type {
   Scoresheet,
   User,
 } from '~/generated/prisma/client'
+import type { Decimal } from '~/generated/prisma/internal/prismaNamespace'
 
 export interface QueryParams {
   filter: string
@@ -35,7 +36,7 @@ export interface UserCompetition {
   eventId?: string
   number: number
   name: string
-  multiplier: number
+  multiplier: Decimal
   isFinalist: boolean
   finalists: number
   isActive: boolean
